@@ -101,7 +101,8 @@ def create_story_one(filtered_df):
                     "x": ["month"],
                     "y": ["mean(meter_reading)"],
                     "color": "month",
-                    "title": "Overview of Meter Readings by Month"
+                    "label": "mean(meter_reading)",
+                    "title": "Mean Meter Readings by Month",
                 }
             ),
             Style(
@@ -129,11 +130,6 @@ def create_story_one(filtered_df):
     )
     story_one.add_slide(slide1)
 
-    # Filter data for high consumption buildings
-    high_consumption_df = filtered_df[filtered_df['z_score'] > 2]
-    high_consumption_data = Data()
-    high_consumption_data.add_df(high_consumption_df)
-
     # Slide 2: Focus on High Consumption using Z-Score
     slide2 = Slide(
         Step(
@@ -141,6 +137,7 @@ def create_story_one(filtered_df):
                 {
                     "coordSystem": "cartesian",
                     "geometry": "circle",
+                    "title": "High Consumptiom Meter Reading by Month with Z-Score > 2",
                     "x": "month",
                     "y": {
                         "set": "mean(meter_reading)",
@@ -174,10 +171,10 @@ def create_story_one(filtered_df):
                             "colorPalette": "#FFB3BA #FFDFBA #FFFFBA #BAFFC9 #BAE1FF #CBAACB #FFDAC1 #FF9AA2 #B5EAD7 #E2F0CB #FFB7B2 #FFDAC1",
                         },
                     },
-                    "fontFamily": "Georgia", 
-                    # "lineWidth": 2, 
+                    "fontFamily": "Georgia",   
                 }
-            )
+            ),
+            Data.filter("record['z_score'] > 2"),
         )
     )
     story_one.add_slide(slide2)
