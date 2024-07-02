@@ -1,0 +1,106 @@
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playwrite+DE+Grund:wght@100..400&display=swap');
+
+body, .stApp {
+    background-image: linear-gradient(135deg, #A9F1DF, #FFBBBB);
+    background-color: transparent;
+    font-family: 'Satoshi', sans-serif;
+}
+
+.title {
+    z-index: 1;
+    max-width: 70%;
+    position: relative;
+    font-size: 3.5rem;
+    color: beige;
+    text-align: center;
+    margin: 0 auto 1.25rem;
+    padding: 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); 
+}
+
+.header {
+    font-size: 1.5rem;
+    margin: 0.7rem 0;
+    color: dimgray;
+}
+
+[data-testid="stMarkdownContainer"] {
+    font-family: "Playwrite DE Grund", cursive !important;
+    font-optical-sizing: auto !important;
+    font-weight: 200 !important;
+    font-style: normal !important;
+    color: darkslategray !important;
+}
+
+[data-testid="stMarkdownContainer"] p {
+    font-size: 0.75rem !important;
+}
+
+.ef3psqc12 {
+    margin-top: 1.75rem;
+    width: 6rem;
+}
+
+.crimson-text-regular {
+    font-family: "Crimson Text", serif;
+    font-weight: 400;
+    font-style: normal;
+}
+  
+.crimson-text-semibold {
+    font-family: "Crimson Text", serif;
+    font-weight: 600;
+    font-style: normal;
+}
+
+.crimson-text-bold {
+    font-family: "Crimson Text", serif;
+    font-weight: 700;
+    font-style: normal;
+}
+
+.playwrite-de-grund-extra-light {
+    font-family: "Playwrite DE Grund", cursive;
+    font-optical-sizing: auto;
+    font-weight: 200;
+    font-style: normal;
+}
+
+.playwrite-de-grund-light {
+    font-family: "Playwrite DE Grund", cursive;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
+}
+
+.playwrite-de-grund-regular {
+    font-family: "Playwrite DE Grund", cursive;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.rainbow{
+    margin-top: 8px;
+    border-radius: 1.5rem;
+	width: 100%;
+	height: 8px;
+	background-repeat: repeat-x;
+	background: linear-gradient(to right, 
+        #eb5252, 
+        #f78f2f,
+        #f4c151,
+        #75d850, 
+        #6284FF, 
+        #eb5252
+    );
+	animation: rainbow 20s linear infinite;
+	background-size: 200% 100% !important;
+    opacity: 0.5;
+}
+
+@keyframes rainbow{
+	0% {background-position: 0;}
+	100% {background-position: 800% 0;}
+}
