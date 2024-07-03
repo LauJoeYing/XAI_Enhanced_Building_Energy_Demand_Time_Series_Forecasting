@@ -88,6 +88,10 @@ def preprocess_data(df):
     df['wind_direction'] = df['wind_direction'].astype(str)
     df['day'] = df['day'].astype(str)
     df['hour'] = df['hour'].astype(str)
+    df['primary_use'] = df['primary_use'].astype(str)
+    df['meter'] = df['meter'].astype(str)
+    df['dew_temperature'] = df['dew_temperature'].astype(str)
+    df['air_temperature'] = df['air_temperature'].astype(str)
     return df
 
 def create_indicator_chart(value, title):
@@ -418,7 +422,6 @@ def create_story_four(filtered_df):
     # Slide 1: Overview of Meter Readings by Day
     slide1 = Slide(
         Step(
-            Data.filter(None),
             Config(
                 {
                     "coordSystem": "polar",
@@ -510,6 +513,312 @@ def create_story_four(filtered_df):
 
     story_four.add_slide(slide2)
     return story_four
+
+def create_story_five(filtered_df):
+    data = Data()
+    data.add_df(filtered_df)
+    story_five = Story(data=data)
+    story_five.set_size("100%", "600px")
+    story_five.set_feature("tooltip", True)
+
+    # Slide 1: Overview of Meter Readings by Day
+    slide1 = Slide(
+        Step(
+            Config(
+                {
+                    "coordSystem": "cartesian",
+                    "geometry": "rectangle",
+                    "x": "meter",
+                    "y": {
+                        "set": "mean(meter_reading)",
+                        "range": {"min": "auto", "max": "110%"},
+                    },
+                    "color": "meter",
+                    "lightness": None,
+                    "size": None,
+                    "noop": None,
+                    "split": False,
+                    "align": "none",
+                    "orientation": "horizontal",
+                    "label": None,
+                    "sort": "none",
+                }
+            ),
+            Style(
+                {
+                    "plot": {
+                        "yAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
+                        "xAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
+                        "marker": {
+                            "label": {
+                                "numberFormat": "prefixed",
+                                "maxFractionDigits": "1",
+                                "numberScale": "shortScaleSymbolUS",
+                            },
+                            "rectangleSpacing": None,
+                            "circleMinRadius": 0.005,
+                            "borderOpacity": 1,
+                            "colorPalette": "#694db1 #029a67 #fa7f16 #f1c226 #d06c29 #d19565 #f1474d #b6a720 #807126 #f4714d #b55ca9 #f58ffc #bc458e #9c7cee #9c4fb4 #6f9ffc #5e6cbc #79858d #a99789 #4c7350 #ae7a43 #7bb057 #497655 #9d1069 #ae3894 #b20000",
+                        },
+                    }
+                }
+            ),
+        )
+    )
+    story_five.add_slide(slide1)
+
+    slide2 = Slide(
+        Step(
+            Config(
+                {
+                    "coordSystem": "cartesian",
+                    "geometry": "rectangle",
+                    "x": "dew_temperature",
+                    "y": {
+                        "set": "mean(meter_reading)",
+                        "range": {"min": "auto", "max": "110%"},
+                    },
+                    "color": None,
+                    "lightness": None,
+                    "size": None,
+                    "noop": None,
+                    "split": False,
+                    "align": "none",
+                    "orientation": "horizontal",
+                    "label": None,
+                    "sort": "none",
+                }
+            ),
+            Style(
+                {
+                    "plot": {
+                        "yAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
+                        "xAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
+                        "marker": {
+                            "label": {
+                                "numberFormat": "prefixed",
+                                "maxFractionDigits": "1",
+                                "numberScale": "shortScaleSymbolUS",
+                            },
+                            "rectangleSpacing": None,
+                            "circleMinRadius": 0.005,
+                            "borderOpacity": 1,
+                            "colorPalette": "#4171cd",
+                        },
+                    }
+                }
+            ),
+        )
+    )
+    story_five.add_slide(slide2)
+    
+    return story_five
+
+def create_story_six(filtered_df):
+    data = Data()
+    data.add_df(filtered_df)
+    story_six = Story(data=data)
+    story_six.set_size("100%", "600px")
+    story_six.set_feature("tooltip", True)
+
+    # Slide 1: Overview of Meter Readings by Day
+    slide1 = Slide(
+        Step(
+            Data.filter(None),
+            Config(
+                {
+                    "coordSystem": "cartesian",
+                    "geometry": "area",
+                    "x": "air_temperature",
+                    "y": {
+                        "set": "mean(meter_reading)",
+                        "range": {"min": "auto", "max": "110%"},
+                    },
+                    "color": None,
+                    "lightness": None,
+                    "size": None,
+                    "noop": None,
+                    "split": False,
+                    "align": "none",
+                    "orientation": "horizontal",
+                    "label": None,
+                    "sort": "none",
+                }
+            ),
+            Style(
+                {
+                    "plot": {
+                        "yAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
+                        "xAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
+                        "marker": {
+                            "label": {
+                                "numberFormat": "prefixed",
+                                "maxFractionDigits": "1",
+                                "numberScale": "shortScaleSymbolUS",
+                            },
+                            "rectangleSpacing": None,
+                            "circleMinRadius": 0.005,
+                            "borderOpacity": 1,
+                            "colorPalette": "#4171cd",
+                        },
+                    }
+                }
+            ),
+        )
+    )
+    story_six.add_slide(slide1)
+
+    slide2 = Slide(
+        Step(
+            Config(
+                {
+                    "coordSystem": "cartesian",
+                    "geometry": "rectangle",
+                    "x": "dew_temperature",
+                    "y": {
+                        "set": "mean(meter_reading)",
+                        "range": {"min": "auto", "max": "110%"},
+                    },
+                    "color": None,
+                    "lightness": None,
+                    "size": None,
+                    "noop": None,
+                    "split": False,
+                    "align": "none",
+                    "orientation": "horizontal",
+                    "label": None,
+                    "sort": "none",
+                }
+            ),
+            Style(
+                {
+                    "plot": {
+                        "yAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
+                        "xAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
+                        "marker": {
+                            "label": {
+                                "numberFormat": "prefixed",
+                                "maxFractionDigits": "1",
+                                "numberScale": "shortScaleSymbolUS",
+                            },
+                            "rectangleSpacing": None,
+                            "circleMinRadius": 0.005,
+                            "borderOpacity": 1,
+                            "colorPalette": "#4171cd",
+                        },
+                    }
+                }
+            ),
+        )
+    )
+    story_six.add_slide(slide2)
+    return story_six
+
+def create_story_seven(filtered_df):
+    data = Data()
+    data.add_df(filtered_df)
+    story_seven = Story(data=data)
+    story_seven.set_size("100%", "600px")
+    story_seven.set_feature("tooltip", True)
+
+    slide1 = Slide(
+        Step(
+            Data.filter(None),
+            Config(
+                {
+                    "coordSystem": "cartesian",
+                    "geometry": "rectangle",
+                    "x": None,
+                    "y": {"set": None, "range": {"min": "auto", "max": "auto"}},
+                    "color": "square_feet",
+                    "lightness": None,
+                    "size": ["square_feet", "mean(meter_reading)"],
+                    "noop": None,
+                    "split": False,
+                    "align": "none",
+                    "orientation": "horizontal",
+                    "label": None,
+                    "sort": "none",
+                }
+            ),
+            Style(
+                {
+                    "plot": {
+                        "yAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
+                        "xAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
+                        "marker": {
+                            "label": {
+                                "numberFormat": "prefixed",
+                                "maxFractionDigits": "1",
+                                "numberScale": "shortScaleSymbolUS",
+                            },
+                            "rectangleSpacing": None,
+                            "circleMinRadius": 0.005,
+                            "borderOpacity": 1,
+                            "colorPalette": "#03ae71 #f4941b #f4c204 #d49664 #f25456 #9e67ab #bca604 #846e1c #fc763c #b462ac #f492fc #bc4a94 #9c7ef4 #9c52b4 #6ca2fc #5c6ebc #7c868c #ac968c #4c7450 #ac7a4c #7cae54 #4c7450 #9c1a6c #ac3e94 #b41204",
+                        },
+                    }
+                }
+            ),
+        )
+    )
+    story_seven.add_slide(slide1)
+    return story_seven
+
+def create_story_eight(filtered_df):
+    data = Data()
+    data.add_df(filtered_df)
+    story_eight = Story(data=data)
+    story_eight.set_size("100%", "600px")
+    story_eight.set_feature("tooltip", True)
+
+    slide1 = Slide(
+        Step(
+            Data.filter(None),
+            Config(
+                {
+                    "coordSystem": "cartesian",
+                    "geometry": "rectangle",
+                    "x": "mean(meter_reading)",
+                    "y": {
+                        "set": "sea_level_pressure",
+                        "range": {"min": "auto", "max": "auto"},
+                    },
+                    "color": "sea_level_pressure",
+                    "lightness": None,
+                    "size": None,
+                    "noop": None,
+                    "split": False,
+                    "align": "none",
+                    "orientation": "vertical",
+                    "label": None,
+                    "sort": "none",
+                }
+            ),
+            Style(
+                {
+                    "plot": {
+                        "yAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
+                        "xAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
+                        "marker": {
+                            "label": {
+                                "numberFormat": "prefixed",
+                                "maxFractionDigits": "1",
+                                "numberScale": "shortScaleSymbolUS",
+                            },
+                            "rectangleSpacing": None,
+                            "circleMinRadius": 0.005,
+                            "borderOpacity": 1,
+                            "colorPalette": "#03ae71 #f4941b #f4c204 #d49664 #f25456 #9e67ab #bca604 #846e1c #fc763c #b462ac #f492fc #bc4a94 #9c7ef4 #9c52b4 #6ca2fc #5c6ebc #7c868c #ac968c #4c7450 #ac7a4c #7cae54 #4c7450 #9c1a6c #ac3e94 #b41204",
+                        },
+                    }
+                }
+            ),
+        )
+    )
+    story_eight.add_slide(slide1)
+    return story_eight
+
 
 def create_donut_chart(high_consumption_percentage, low_consumption_percentage):
     fig = go.Figure(data=[go.Pie(
@@ -609,13 +918,13 @@ else:
         st.plotly_chart(create_donut_chart(high_consumption_percentage, low_consumption_percentage))
 
     with col2:
-        col21, col22, col23 = st.columns(3)
+        col21, col22 = st.columns(2)
         with col21:
             st.plotly_chart(create_indicator_chart(filtered_df['square_feet'].mean(), "Mean Square Feet"))
         with col22:
             st.plotly_chart(create_indicator_chart(filtered_df['meter_reading'].mean(), "Mean Meter Reading"))
-        with col23:
-            st.plotly_chart(create_indicator_chart(filtered_df['air_temperature'].mean(), "Mean Air Temperature"))
+        # with col23:
+        #     st.plotly_chart(create_indicator_chart(filtered_df['air_temperature'].mean(), "Mean Air Temperature"))
         # with col24:
         #     st.plotly_chart(create_indicator_chart(filtered_df['wind_speed'].mean(), "Mean Wind Speed"))
 
@@ -624,6 +933,10 @@ else:
     story_two = create_story_two(filtered_df)
     story_three = create_story_three(filtered_df)
     story_four = create_story_four(filtered_df)
+    story_five = create_story_five(filtered_df)
+    story_six = create_story_six(filtered_df)
+    story_seven = create_story_seven(filtered_df)
+    story_eight = create_story_eight(filtered_df)
 
     # Save the stories as HTML
     with open("story_one.html", "w") as f:
@@ -634,6 +947,14 @@ else:
         f.write(story_three.to_html())
     with open("story_four.html", "w") as f:
         f.write(story_four.to_html())
+    with open("story_five.html", "w") as f:
+        f.write(story_five.to_html())
+    with open("story_six.html", "w") as f:
+        f.write(story_six.to_html())
+    with open("story_seven.html", "w") as f:
+        f.write(story_seven.to_html())
+    with open("story_eight.html", "w") as f:
+        f.write(story_eight.to_html())
 
     # Display the generated HTML files
     col3, col4 = st.columns(2)
@@ -657,6 +978,28 @@ else:
         with open("story_four.html", "r") as f:
             story_four_html = f.read()
         st.components.v1.html(story_four_html, height=650)
+    
+    col7, col8 = st.columns(2)
+    with col7:
+        with open("story_five.html", "r") as f:
+            story_five_html = f.read()
+        st.components.v1.html(story_five_html, height=650)
+
+    with col8:
+        with open("story_six.html", "r") as f:
+            story_six_html = f.read()
+        st.components.v1.html(story_six_html, height=650)
+    
+    col9, col10 = st.columns(2)
+    with col9:
+        with open("story_seven.html", "r") as f:
+            story_seven_html = f.read()
+        st.components.v1.html(story_seven_html, height=650)
+
+    with col10:
+        with open("story_eight.html", "r") as f:
+            story_eight_html = f.read()
+        st.components.v1.html(story_eight_html, height=650)
 
 # File Upload for Data Visualization
 st.markdown("<h2 class='custom-title'>Upload Data for Visualization</h2>", unsafe_allow_html=True)
@@ -672,6 +1015,10 @@ if uploaded_file is not None:
         story_two = create_story_two(filtered_df)
         story_three = create_story_three(filtered_df)
         story_four = create_story_four(filtered_df)
+        story_five = create_story_five(filtered_df)
+        story_six = create_story_six(filtered_df)
+        story_seven = create_story_seven(filtered_df)
+        story_eight = create_story_eight(filtered_df)
 
         with open("story_one.html", "w") as f:
             f.write(story_one.to_html())
@@ -681,6 +1028,15 @@ if uploaded_file is not None:
             f.write(story_three.to_html())
         with open("story_four.html", "w") as f:
             f.write(story_four.to_html())
+        with open("story_five.html", "w") as f:
+            f.write(story_five.to_html())
+        with open("story_six.html", "w") as f:
+            f.write(story_six.to_html())
+        with open("story_seven.html", "w") as f:
+            f.write(story_seven.to_html())
+        with open("story_eight.html", "w") as f:
+            f.write(story_eight.to_html())
+        
 
         col3, col4 = st.columns(2)
         with col3:
@@ -703,6 +1059,28 @@ if uploaded_file is not None:
             with open("story_four.html", "r") as f:
                 story_four_html = f.read()
             st.components.v1.html(story_four_html, height=650)
+        
+        col7, col8 = st.columns(2)
+        with col7:
+            with open("story_five.html", "r") as f:
+                story_five_html = f.read()
+            st.components.v1.html(story_five_html, height=650)
+    
+        with col8:
+            with open("story_six.html", "r") as f:
+                story_six_html = f.read()
+            st.components.v1.html(story_six_html, height=650)
+        
+        col9, col10 = st.columns(2)
+        with col9:
+            with open("story_seven.html", "r") as f:
+                story_seven_html = f.read()
+            st.components.v1.html(story_seven_html, height=650)
+
+        with col10:
+            with open("story_eight.html", "r") as f:
+                story_eight_html = f.read()
+            st.components.v1.html(story_eight_html, height=650)
 
     except Exception as e:
         st.error(f"Error uploading file: {e}")
@@ -714,6 +1092,10 @@ if st.button('Reset Filters'):
     story_two = create_story_two(filtered_df)
     story_three = create_story_three(filtered_df)
     story_four = create_story_four(filtered_df)
+    story_five = create_story_five(filtered_df)
+    story_six = create_story_six(filtered_df)
+    story_seven = create_story_seven(filtered_df)
+    story_eight = create_story_eight(filtered_df)
 
     with open("story_one.html", "w") as f:
         f.write(story_one.to_html())
@@ -723,6 +1105,14 @@ if st.button('Reset Filters'):
         f.write(story_three.to_html())
     with open("story_four.html", "w") as f:
         f.write(story_four.to_html())
+    with open("story_five.html", "w") as f:
+        f.write(story_four.to_html())
+    with open("story_six.html", "w") as f:
+        f.write(story_four.to_html())
+    with open("story_seven.html", "w") as f:
+        f.write(story_seven.to_html())
+    with open("story_eight.html", "w") as f:
+        f.write(story_eight.to_html())
 
     col3, col4 = st.columns(2)
     with col3:
@@ -745,3 +1135,25 @@ if st.button('Reset Filters'):
         with open("story_four.html", "r") as f:
             story_four_html = f.read()
         st.components.v1.html(story_four_html, height=650)
+    
+    col7, col8 = st.columns(2)
+    with col7:
+        with open("story_five.html", "r") as f:
+            story_three_html = f.read()
+        st.components.v1.html(story_five_html, height=650)
+    
+    with col8:
+        with open("story_six.html", "r") as f:
+            story_four_html = f.read()
+        st.components.v1.html(story_six_html, height=650)
+    
+    col9, col10 = st.columns(2)
+    with col9:
+        with open("story_seven.html", "r") as f:
+            story_seven_html = f.read()
+        st.components.v1.html(story_seven_html, height=650)
+
+    with col10:
+        with open("story_eight.html", "r") as f:
+            story_eight_html = f.read()
+        st.components.v1.html(story_eight_html, height=650)
