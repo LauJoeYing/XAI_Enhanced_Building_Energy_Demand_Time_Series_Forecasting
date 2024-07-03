@@ -85,6 +85,23 @@ def preprocess_data(df):
     df['timestamp'] = pd.to_datetime(df['timestamp'])
     return df
 
+
+def create_indicator_chart(value, title):
+    fig = go.Figure(go.Indicator(
+        mode = "number",
+        value = value,
+        title = {"text": title, 'font': {'size': 15, 'family': 'Georgia'}},
+        number = {'font': {'size': 30, 'family': 'Cambria'}},
+        domain = {'x': [0, 1], 'y': [0, 1]}
+    ))
+
+    fig.update_layout(
+        paper_bgcolor='rgba(255, 255, 255, 0.4)',  # White background with 50% opacity
+        plot_bgcolor='rgba(255, 255, 255, 0.4)',   # Plot area background with 50% opacity
+        width=300, height=300
+    )
+    return fig
+
 def create_story_one(filtered_df):
     data = Data()
     data.add_df(filtered_df)
@@ -102,7 +119,7 @@ def create_story_one(filtered_df):
                     "y": ["mean(meter_reading)"],
                     "color": "month",
                     "label": "mean(meter_reading)",
-                    "title": "Mean Meter Readings by Month",
+                    "title": "Overview: Mean Meter Readings by Month",
                 }
             ),
             Style(
@@ -137,7 +154,7 @@ def create_story_one(filtered_df):
                 {
                     "coordSystem": "cartesian",
                     "geometry": "circle",
-                    "title": "High Consumptiom Meter Reading by Month with Z-Score > 2",
+                    "title": "Overview: High Consumption Meter Reading by Month with Z-Score > 2",
                     "x": "month",
                     "y": {
                         "set": "mean(meter_reading)",
@@ -180,8 +197,6 @@ def create_story_one(filtered_df):
     story_one.add_slide(slide2)
     return story_one
 
-
-
 def create_donut_chart(high_consumption_percentage, low_consumption_percentage):
     fig = go.Figure(data=[go.Pie(
         labels=['High Consumption', 'Low Consumption'],
@@ -215,6 +230,7 @@ def create_donut_chart(high_consumption_percentage, low_consumption_percentage):
     )
 
     return fig
+
 
 def create_additional_charts(filtered_df):
     charts = []
@@ -366,22 +382,36 @@ if selected_building_ids:
 
         # Display progress bars
         st.markdown("<h1 class='custom-title'>Building Energy Demand Dashboard</h1>", unsafe_allow_html=True)
-        st.write("Explore the dataset using the visualizations below:")
+  
 
-        st.plotly_chart(create_donut_chart(high_consumption_percentage, low_consumption_percentage))
+        col1, col2 = st.columns([1, 3])
+
+        with col1:
+            st.plotly_chart(create_donut_chart(high_consumption_percentage, low_consumption_percentage))
+
+        with col2:
+            col21, col22, col23, col24 = st.columns(4)
+            with col21:
+                st.plotly_chart(create_indicator_chart(filtered_df['square_feet'].mean(), "Mean Square Feet"))
+            with col22:
+                st.plotly_chart(create_indicator_chart(filtered_df['meter_reading'].mean(), "Mean Meter Reading"))
+            with col23:
+                st.plotly_chart(create_indicator_chart(filtered_df['air_temperature'].mean(), "Mean Air Temperature"))
+            with col24:
+                st.plotly_chart(create_indicator_chart(filtered_df['wind_speed'].mean(), "Mean Wind Speed"))
 
         # Create and display the story_one
-        story_one_one = create_story_one(filtered_df)
+        story_one = create_story_one(filtered_df)
 
         # Save the story_one as HTML
-        with open("story_one_one.html", "w") as f:
-            f.write(story_one_one.to_html())
+        with open("story_one.html", "w") as f:
+            f.write(story_one.to_html())
 
         # Display the generated HTML file
-        with open("story_one_one.html", "r") as f:
-            story_one_one_html = f.read()
+        with open("story_one.html", "r") as f:
+            story_one_html = f.read()
 
-        st.components.v1.html(story_one_one_html, height=650)
+        st.components.v1.html(story_one_html, height=650)
 
         # Display additional charts
         charts = create_additional_charts(filtered_df)
