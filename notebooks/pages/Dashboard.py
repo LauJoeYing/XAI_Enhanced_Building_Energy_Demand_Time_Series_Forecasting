@@ -6,6 +6,9 @@ from ipyvizzustory import Story, Slide, Step
 import plotly.graph_objects as go
 import plotly.express as px
 
+# Set Streamlit layout to wide
+st.set_page_config(layout="wide")
+
 # Custom CSS for styling
 custom_css = """
 <style>
@@ -40,8 +43,6 @@ custom_css = """
 </style>
 """
 
-# Set Streamlit layout to wide
-st.set_page_config(layout="wide")
 st.markdown(custom_css, unsafe_allow_html=True)
 
 # Define data types
@@ -81,10 +82,13 @@ def load_dataset(filepath, nrows=None):
 
 # Function to preprocess data
 def preprocess_data(df):
-    df['z_score'] = stats.zscore(df['meter_reading'])
     df['timestamp'] = pd.to_datetime(df['timestamp'])
+    df['cloud_coverage'] = df['cloud_coverage'].astype(str)
+    df['wind_speed'] = df['wind_speed'].astype(str)
+    df['wind_direction'] = df['wind_direction'].astype(str)
+    df['day'] = df['day'].astype(str)
+    df['hour'] = df['hour'].astype(str)
     return df
-
 
 def create_indicator_chart(value, title):
     fig = go.Figure(go.Indicator(
@@ -126,6 +130,7 @@ def create_story_one(filtered_df):
                 {
                     "paddingLeft": "3em",
                     "plot": {
+                        "backgroundColor": "rgba(255, 255, 255, 0.5)",
                         "yAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
                         "xAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
                         "marker": {
@@ -147,14 +152,15 @@ def create_story_one(filtered_df):
     )
     story_one.add_slide(slide1)
 
-    # Slide 2: Focus on High Consumption using Z-Score
+    # Slide 2: Focus on High Consumption using meter reading >= 987.20
     slide2 = Slide(
         Step(
+            Data.filter("record['meter_reading'] >= 987.20"),
             Config(
                 {
                     "coordSystem": "cartesian",
                     "geometry": "circle",
-                    "title": "Overview: High Consumption Meter Reading by Month with Z-Score > 2",
+                    "title": "Overview: High Consumption Meter Reading by Month with meter reading >= 987.20",
                     "x": "month",
                     "y": {
                         "set": "mean(meter_reading)",
@@ -167,13 +173,14 @@ def create_story_one(filtered_df):
                     "split": False,
                     "align": "none",
                     "orientation": "horizontal",
-                    "label": None,
+                    "label": "mean(meter_reading)",
                     "sort": "none",
                 }
             ),
             Style(
                 {
                     "plot": {
+                        "backgroundColor": "rgba(255, 255, 255, 0.5)",
                         "yAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
                         "xAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
                         "marker": {
@@ -190,12 +197,319 @@ def create_story_one(filtered_df):
                     },
                     "fontFamily": "Georgia",   
                 }
-            ),
-            Data.filter("record['z_score'] > 2"),
+            )
         )
     )
     story_one.add_slide(slide2)
     return story_one
+
+def create_story_two(filtered_df):
+    data = Data()
+    data.add_df(filtered_df)
+    story_two = Story(data=data)
+    story_two.set_size("100%", "600px")
+    story_two.set_feature("tooltip", True)
+
+    # Slide 1: Overview of Meter Readings by Cloud Coverage
+    slide1 = Slide(
+        Step(
+            Config(
+                {
+                    "coordSystem": "polar",
+                    "geometry": "rectangle",
+                    "x": ["cloud_coverage", "mean(meter_reading)"],
+                    "y": {"set": None, "range": {"min": "auto", "max": "auto"}},
+                    "color": "cloud_coverage",
+                    "title": "Cloud Coverage by Meter Reading",
+                    "lightness": None,
+                    "size": None,
+                    "noop": None,
+                    "split": False,
+                    "align": "none",
+                    "orientation": "vertical",
+                    "label": None,
+                    "sort": "none",
+                }
+            ),
+            Style(
+                {
+                    "plot": {
+                        "yAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
+                        "xAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
+                        "marker": {
+                            "label": {
+                                "numberFormat": "prefixed",
+                                "maxFractionDigits": "1",
+                                "numberScale": "shortScaleSymbolUS",
+                            },
+                            "rectangleSpacing": None,
+                            "circleMinRadius": 0.005,
+                            "borderOpacity": 1,
+                            "colorPalette": "#FFB3BA #FFDFBA #FFFFBA #BAFFC9 #BAE1FF #CBAACB #FFDAC1 #FF9AA2 #B5EAD7 #E2F0CB #FFB7B2 #FFDAC1",
+                        },
+                    },
+                    "fontFamily": "Georgia",
+                }
+            )
+        )
+    )
+    
+    story_two.add_slide(slide1)
+
+    # Slide 2: Focus on High Consumption using meter reading >= 987.20
+    slide2 = Slide(
+        Step(
+            Data.filter("record['meter_reading'] >= 987.20"),
+            Config(
+                {
+                    "coordSystem": "polar",
+                    "geometry": "rectangle",
+                    "x": ["cloud_coverage", "mean(meter_reading)"],
+                    "y": {"set": None, "range": {"min": "-200%", "max": "100%"}},
+                    "color": "cloud_coverage",
+                    "title": "Cloud Coverage by Meter Reading",
+                    "lightness": None,
+                    "size": None,
+                    "noop": None,
+                    "split": False,
+                    "align": "none",
+                    "orientation": "vertical",
+                    "label": None,
+                    "sort": "none",
+                }
+            ),
+            Style(
+                {
+                    "plot": {
+                        "backgroundColor": "rgba(255, 255, 255, 0.5)",
+                        "yAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
+                        "xAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
+                        "marker": {
+                            "label": {
+                                "numberFormat": "prefixed",
+                                "maxFractionDigits": "1",
+                                "numberScale": "shortScaleSymbolUS",
+                            },
+                            "rectangleSpacing": None,
+                            "circleMinRadius": 0.005,
+                            "borderOpacity": 1,
+                            "colorPalette": "#FFB3BA #FFDFBA #FFFFBA #BAFFC9 #BAE1FF #CBAACB #FFDAC1 #FF9AA2 #B5EAD7 #E2F0CB #FFB7B2 #FFDAC1",
+                        },
+                    },
+                    "fontFamily": "Georgia",
+                }
+            ),
+        )
+    )
+
+    story_two.add_slide(slide2)
+
+    return story_two
+
+def create_story_three(filtered_df):
+    data = Data()
+    data.add_df(filtered_df)
+    story_three = Story(data=data)
+    story_three.set_size("100%", "600px")
+    story_three.set_feature("tooltip", True)
+
+    slide1 = Slide(
+        Step(
+            Config(
+                {
+                    "coordSystem": "polar",
+                    "geometry": "rectangle",
+                    "x": "wind_direction",
+                    "y": {
+                        "set": "mean(meter_reading)",
+                        "range": {"min": "auto", "max": "auto"},
+                    },
+                    "color": None,
+                    "lightness": None,
+                    "size": None,
+                    "noop": None,
+                    "split": False,
+                    "align": "none",
+                    "orientation": "horizontal",
+                    "label": None,
+                    "sort": "none",
+                    "title" : "Meter Reading by Wind Direction",
+                }
+            ),
+            Style(
+                {
+                    "plot": {
+                        "yAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
+                        "xAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
+                        "marker": {
+                            "label": {
+                                "numberFormat": "prefixed",
+                                "maxFractionDigits": "1",
+                                "numberScale": "shortScaleSymbolUS",
+                            },
+                            "rectangleSpacing": None,
+                            "circleMinRadius": 0.005,
+                            "borderOpacity": 1,
+                            "colorPalette": "#C3B1E1",
+                        },
+                    },
+                    "fontFamily": "Georgia",
+                }
+            ),
+        )
+    )
+    story_three.add_slide(slide1)
+
+    slide2 = Slide(
+        Step(
+            Config(
+                {
+                    "coordSystem": "cartesian",
+                    "geometry": "circle",
+                    "x": None,
+                    "y": {"set": None, "range": {"min": "auto", "max": "auto"}},
+                    "color": "wind_speed",
+                    "lightness": None,
+                    "size": ["wind_speed", "mean(meter_reading)"],
+                    "noop": None,
+                    "split": False,
+                    "align": "none",
+                    "orientation": "horizontal",
+                    "label": None,
+                    "sort": "none",
+                    "title": "Meter Reading by Wind Speed",
+                }
+            ),
+            Style(
+                {
+                    "plot": {
+                        "yAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
+                        "xAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
+                        "marker": {
+                            "label": {
+                                "numberFormat": "prefixed",
+                                "maxFractionDigits": "1",
+                                "numberScale": "shortScaleSymbolUS",
+                            },
+                            "rectangleSpacing": None,
+                            "circleMinRadius": 0.005,
+                            "borderOpacity": 1,
+                            "colorPalette": "#AEC6CF #FFB347 #FF6961 #77DD77 #CFCFC4 #F49AC2 #B39EB5 #FFB347 #FFD1DC #FDFD96 #C23B22 #D6A2E8 #87CEEB #FFB3BA #FFDFBA #FFFFBA #BAFFC9 #BAE1FF",
+                        },
+                    },
+                    "fontFamily": "Georgia",
+                }
+            ),
+        )
+    )
+    story_three.add_slide(slide2)
+
+    return story_three
+
+
+
+def create_story_four(filtered_df):
+    data = Data()
+    data.add_df(filtered_df)
+    story_four = Story(data=data)
+    story_four.set_size("100%", "600px")
+    story_four.set_feature("tooltip", True)
+
+    # Slide 1: Overview of Meter Readings by Day
+    slide1 = Slide(
+        Step(
+            Data.filter(None),
+            Config(
+                {
+                    "coordSystem": "polar",
+                    "geometry": "rectangle",
+                    "x": "mean(meter_reading)",
+                    "y": {"set": "day", "range": {"min": "-50%", "max": "auto"}},
+                    "color": None,
+                    "lightness": None,
+                    "size": None,
+                    "noop": None,
+                    "split": False,
+                    "align": "none",
+                    "orientation": "vertical",
+                    "label": None,
+                    "sort": "none",
+                    "title": "Meter Reading by Hour",
+                }
+            ),
+            Style(
+                {
+                    "plot": {
+                        "yAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
+                        "xAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
+                        "marker": {
+                            "label": {
+                                "numberFormat": "prefixed",
+                                "maxFractionDigits": "1",
+                                "numberScale": "shortScaleSymbolUS",
+                            },
+                            "rectangleSpacing": None,
+                            "circleMinRadius": 0.005,
+                            "borderOpacity": 1,
+                            "colorPalette": "#C1E1C1",
+                        },
+                    }
+                }
+            ),
+        )
+    )
+
+    story_four.add_slide(slide1)
+
+    slide2 = Slide(
+        Step(
+            Data.filter(None),
+            Config(
+                {
+                    "coordSystem": "polar",
+                    "geometry": "rectangle",
+                    "x": "hour",
+                    "y": {
+                        "set": "mean(meter_reading)",
+                        "range": {"min": "auto", "max": "auto"},
+                    },
+                    "color": None,
+                    "lightness": None,
+                    "size": None,
+                    "noop": None,
+                    "split": False,
+                    "align": "none",
+                    "orientation": "horizontal",
+                    "label": None,
+                    "sort": "none",
+                    "title": "Meter Reading by Day",
+                }
+            ),
+            Style(
+                {
+                    "plot": {
+                        "yAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
+                        "xAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
+                        "marker": {
+                            "label": {
+                                "numberFormat": "prefixed",
+                                "maxFractionDigits": "1",
+                                "numberScale": "shortScaleSymbolUS",
+                            },
+                            "rectangleSpacing": None,
+                            "circleMinRadius": 0.005,
+                            "borderOpacity": 1,
+                            "colorPalette": "#C1E1C1",
+                        },
+                    },
+                    "fontFamily": "Georgia",
+                }
+            ),
+        )
+    )
+
+    story_four.add_slide(slide2)
+    return story_four
 
 def create_donut_chart(high_consumption_percentage, low_consumption_percentage):
     fig = go.Figure(data=[go.Pie(
@@ -231,81 +545,6 @@ def create_donut_chart(high_consumption_percentage, low_consumption_percentage):
 
     return fig
 
-
-def create_additional_charts(filtered_df):
-    charts = []
-
-    # Scatter Plot: Meter Reading vs. Air Temperature
-    fig_scatter = px.scatter(filtered_df, x='air_temperature', y='meter_reading', 
-                             color='primary_use', 
-                             hover_data=['building_id', 'site_id', 'square_feet'],
-                             title='Meter Reading vs. Air Temperature')
-    fig_scatter.update_layout(
-        font_family="Georgia",
-        paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(0,0,0,0)',
-        coloraxis_colorbar=dict(titlefont=dict(family="Georgia")),
-        title_font=dict(size=20, family='Georgia', color='black')
-    )
-    charts.append(fig_scatter)
-
-    # Line Chart: Meter Reading Over Time
-    fig_line = px.line(filtered_df, x='timestamp', y='meter_reading', 
-                       color='building_id',
-                       title='Meter Reading Over Time')
-    fig_line.update_layout(
-        font_family="Georgia",
-        paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(0,0,0,0)',
-        coloraxis_colorbar=dict(titlefont=dict(family="Georgia")),
-        title_font=dict(size=20, family='Georgia', color='black')
-    )
-    charts.append(fig_line)
-
-    # Histogram: Distribution of Meter Reading
-    fig_histogram = px.histogram(filtered_df, x='meter_reading', 
-                                 nbins=50, 
-                                 title='Distribution of Meter Reading')
-    fig_histogram.update_layout(
-        font_family="Georgia",
-        paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(0,0,0,0)',
-        title_font=dict(size=20, family='Georgia', color='black')
-    )
-    charts.append(fig_histogram)
-
-    # Parallel Coordinates Plot
-    fig_parallel = px.parallel_coordinates(filtered_df, 
-                                           dimensions=['air_temperature', 'cloud_coverage', 'dew_temperature', 
-                                                       'precip_depth_1_hr', 'sea_level_pressure', 'wind_speed', 
-                                                       'meter_reading'],
-                                           color='meter_reading',
-                                           title='Parallel Coordinates Plot')
-    fig_parallel.update_layout(
-        font_family="Georgia",
-        paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(0,0,0,0)',
-        title_font=dict(size=20, family='Georgia', color='black')
-    )
-    charts.append(fig_parallel)
-
-    # Scatter Matrix Plot
-    fig_scatter_matrix = px.scatter_matrix(filtered_df, 
-                                           dimensions=['air_temperature', 'cloud_coverage', 'dew_temperature', 
-                                                       'precip_depth_1_hr', 'sea_level_pressure', 'wind_speed', 
-                                                       'meter_reading'],
-                                           color='primary_use',
-                                           title='Scatter Matrix of Variables')
-    fig_scatter_matrix.update_layout(
-        font_family="Georgia",
-        paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(0,0,0,0)',
-        title_font=dict(size=20, family='Georgia', color='black')
-    )
-    charts.append(fig_scatter_matrix)
-
-    return charts
-
 # Load a subset of the dataset to avoid memory issues
 file_path = 'D:/Downloads/final-year-project/data/final_subset_train_data.csv'
 df = load_dataset(file_path)  # Load data
@@ -313,6 +552,7 @@ if df.empty:
     st.error("The dataset is empty or could not be loaded.")
 else:
     df = preprocess_data(df)
+
 # Define filters
 filters = {}
 excluded_columns = ["Unnamed: 0", "building_id"]
@@ -349,74 +589,74 @@ for column, filter_val in filters.items():
 if exclude_nan:
     filtered_df = filtered_df.dropna()
 
-# Building ID Filter with "Select All" option
-building_ids = df['building_id'].unique().tolist()
-building_ids.sort()
-select_all = st.sidebar.checkbox("Select All building_id", value=False)
+# Calculate percentages
+total_buildings = filtered_df['building_id'].nunique()
+high_consumption_buildings = filtered_df[filtered_df['meter_reading'] >= 987.20]['building_id'].nunique()
+low_consumption_buildings = total_buildings - high_consumption_buildings
 
-if select_all:
-    selected_building_ids = building_ids
+if total_buildings == 0:
+    st.error("No data available for the selected filters.")
 else:
-    selected_building_ids = st.sidebar.multiselect(
-        "Select building_id",
-        options=building_ids,
-        default=building_ids[:10] if building_ids else [],
-        key="building_id_multiselect",
-        help="Use the checkbox above to select/deselect all"
-    )
+    high_consumption_percentage = (high_consumption_buildings / total_buildings) * 100
+    low_consumption_percentage = (low_consumption_buildings / total_buildings) * 100
 
-# Apply building ID filter
-if selected_building_ids:
-    filtered_df = filtered_df[filtered_df['building_id'].isin(selected_building_ids)]
+    # Display progress bars
+    st.markdown("<h1 class='custom-title'>Building Energy Demand Dashboard</h1>", unsafe_allow_html=True)
 
-    # Calculate percentages
-    total_buildings = filtered_df['building_id'].nunique()
-    high_consumption_buildings = filtered_df[filtered_df['z_score'] > 2]['building_id'].nunique()
-    low_consumption_buildings = total_buildings - high_consumption_buildings
+    col1, col2 = st.columns([1, 3])
 
-    if total_buildings == 0:
-        st.error("No data available for the selected filters.")
-    else:
-        high_consumption_percentage = (high_consumption_buildings / total_buildings) * 100
-        low_consumption_percentage = (low_consumption_buildings / total_buildings) * 100
+    with col1:
+        st.plotly_chart(create_donut_chart(high_consumption_percentage, low_consumption_percentage))
 
-        # Display progress bars
-        st.markdown("<h1 class='custom-title'>Building Energy Demand Dashboard</h1>", unsafe_allow_html=True)
-  
+    with col2:
+        col21, col22, col23 = st.columns(3)
+        with col21:
+            st.plotly_chart(create_indicator_chart(filtered_df['square_feet'].mean(), "Mean Square Feet"))
+        with col22:
+            st.plotly_chart(create_indicator_chart(filtered_df['meter_reading'].mean(), "Mean Meter Reading"))
+        with col23:
+            st.plotly_chart(create_indicator_chart(filtered_df['air_temperature'].mean(), "Mean Air Temperature"))
+        # with col24:
+        #     st.plotly_chart(create_indicator_chart(filtered_df['wind_speed'].mean(), "Mean Wind Speed"))
 
-        col1, col2 = st.columns([1, 3])
+    # Create and display the stories
+    story_one = create_story_one(filtered_df)
+    story_two = create_story_two(filtered_df)
+    story_three = create_story_three(filtered_df)
+    story_four = create_story_four(filtered_df)
 
-        with col1:
-            st.plotly_chart(create_donut_chart(high_consumption_percentage, low_consumption_percentage))
+    # Save the stories as HTML
+    with open("story_one.html", "w") as f:
+        f.write(story_one.to_html())
+    with open("story_two.html", "w") as f:
+        f.write(story_two.to_html())
+    with open("story_three.html", "w") as f:
+        f.write(story_three.to_html())
+    with open("story_four.html", "w") as f:
+        f.write(story_four.to_html())
 
-        with col2:
-            col21, col22, col23, col24 = st.columns(4)
-            with col21:
-                st.plotly_chart(create_indicator_chart(filtered_df['square_feet'].mean(), "Mean Square Feet"))
-            with col22:
-                st.plotly_chart(create_indicator_chart(filtered_df['meter_reading'].mean(), "Mean Meter Reading"))
-            with col23:
-                st.plotly_chart(create_indicator_chart(filtered_df['air_temperature'].mean(), "Mean Air Temperature"))
-            with col24:
-                st.plotly_chart(create_indicator_chart(filtered_df['wind_speed'].mean(), "Mean Wind Speed"))
-
-        # Create and display the story_one
-        story_one = create_story_one(filtered_df)
-
-        # Save the story_one as HTML
-        with open("story_one.html", "w") as f:
-            f.write(story_one.to_html())
-
-        # Display the generated HTML file
+    # Display the generated HTML files
+    col3, col4 = st.columns(2)
+    with col3:
         with open("story_one.html", "r") as f:
             story_one_html = f.read()
-
         st.components.v1.html(story_one_html, height=650)
-
-        # Display additional charts
-        charts = create_additional_charts(filtered_df)
-        for chart in charts:
-            st.plotly_chart(chart, use_container_width=True)
+    
+    with col4:
+        with open("story_two.html", "r") as f:
+            story_two_html = f.read()
+        st.components.v1.html(story_two_html, height=650)
+    
+    col5, col6 = st.columns(2)
+    with col5:
+        with open("story_three.html", "r") as f:
+            story_three_html = f.read()
+        st.components.v1.html(story_three_html, height=650)
+    
+    with col6:
+        with open("story_four.html", "r") as f:
+            story_four_html = f.read()
+        st.components.v1.html(story_four_html, height=650)
 
 # File Upload for Data Visualization
 st.markdown("<h2 class='custom-title'>Upload Data for Visualization</h2>", unsafe_allow_html=True)
@@ -429,14 +669,41 @@ if uploaded_file is not None:
         df = preprocess_data(df)
         filtered_df = df.copy()
         story_one = create_story_one(filtered_df)
+        story_two = create_story_two(filtered_df)
+        story_three = create_story_three(filtered_df)
+        story_four = create_story_four(filtered_df)
+
         with open("story_one.html", "w") as f:
             f.write(story_one.to_html())
-        with open("story_one.html", "r") as f:
-            story_one_html = f.read()
-        st.components.v1.html(story_one_html, height=650)
-        charts = create_additional_charts(filtered_df)
-        for chart in charts:
-            st.plotly_chart(chart, use_container_width=True)
+        with open("story_two.html", "w") as f:
+            f.write(story_two.to_html())
+        with open("story_three.html", "w") as f:
+            f.write(story_three.to_html())
+        with open("story_four.html", "w") as f:
+            f.write(story_four.to_html())
+
+        col3, col4 = st.columns(2)
+        with col3:
+            with open("story_one.html", "r") as f:
+                story_one_html = f.read()
+            st.components.v1.html(story_one_html, height=650)
+        
+        with col4:
+            with open("story_two.html", "r") as f:
+                story_two_html = f.read()
+            st.components.v1.html(story_two_html, height=650)
+        
+        col5, col6 = st.columns(2)
+        with col5:
+            with open("story_three.html", "r") as f:
+                story_three_html = f.read()
+            st.components.v1.html(story_three_html, height=650)
+    
+        with col6:
+            with open("story_four.html", "r") as f:
+                story_four_html = f.read()
+            st.components.v1.html(story_four_html, height=650)
+
     except Exception as e:
         st.error(f"Error uploading file: {e}")
 
@@ -444,11 +711,37 @@ if uploaded_file is not None:
 if st.button('Reset Filters'):
     filtered_df = df.copy()
     story_one = create_story_one(filtered_df)
+    story_two = create_story_two(filtered_df)
+    story_three = create_story_three(filtered_df)
+    story_four = create_story_four(filtered_df)
+
     with open("story_one.html", "w") as f:
         f.write(story_one.to_html())
-    with open("story_one.html", "r") as f:
-        story_one_html = f.read()
-    st.components.v1.html(story_one_html, height=650)
-    charts = create_additional_charts(filtered_df)
-    for chart in charts:
-        st.plotly_chart(chart, use_container_width=True)
+    with open("story_two.html", "w") as f:
+        f.write(story_two.to_html())
+    with open("story_three.html", "w") as f:
+        f.write(story_three.to_html())
+    with open("story_four.html", "w") as f:
+        f.write(story_four.to_html())
+
+    col3, col4 = st.columns(2)
+    with col3:
+        with open("story_one.html", "r") as f:
+            story_one_html = f.read()
+        st.components.v1.html(story_one_html, height=650)
+    
+    with col4:
+        with open("story_two.html", "r") as f:
+            story_two_html = f.read()
+        st.components.v1.html(story_two_html, height=650)
+    
+    col5, col6 = st.columns(2)
+    with col5:
+        with open("story_three.html", "r") as f:
+            story_three_html = f.read()
+        st.components.v1.html(story_three_html, height=650)
+    
+    with col6:
+        with open("story_four.html", "r") as f:
+            story_four_html = f.read()
+        st.components.v1.html(story_four_html, height=650)
