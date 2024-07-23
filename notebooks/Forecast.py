@@ -1,12 +1,16 @@
 import streamlit as st
-import streamlit_shadcn_ui as ui
 import numpy as np
 import tensorflow as tf
-from joblib import load
+from joblib import load, dump
+from datetime import datetime
 import shap
 import plotly.express as px
 import pandas as pd
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
+from sklearn.pipeline import Pipeline
+from sklearn.impute import SimpleImputer
+from sklearn.compose import ColumnTransformer
+from data_pipeline import transformation_pipeline
 import time
 from PIL import Image
 
@@ -18,8 +22,41 @@ with open('D:/Downloads/final-year-project/notebooks/stylesheets/style.css') as 
     st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
 # Define the expected input shape
-time_steps = 6  # Adjust based on your model training
-expected_feature_count = 12  # Adjust based on your model training
+time_steps = 6  
+expected_feature_count = 12  
+
+# Cache the data loading function to avoid reloading the dataset multiple times
+@st.cache_data
+def load_data(path, nrows=None):
+    return pd.read_csv(path, nrows=nrows)
+
+# Load a smaller subset of the data for demonstration purposes
+data_path = 'D:/Downloads/final-year-project/notebooks/filtered_data.csv'
+df = load_data(data_path, nrows=8000) 
+
+top_building_ids = df['building_id'].unique().tolist()
+top_site_ids = df['site_id'].unique().tolist()
+
+# Primary use mapping
+primary_use_mapping = {
+    '0 - Education': 0,
+    '4 - Lodging/residential': 4,
+    '6 - Office': 6,
+    '1 - Entertainment/Public Assembly': 1,
+    '7 - Other': 7,
+    '11 - Retail': 11,
+    '8 - Parking': 8,
+    '9 - Public services': 9,
+    '15 - Warehouse/storage': 15,
+    '2 - Food sales and service': 2,
+    '10 - Religious worship': 10,
+    '3 - Healthcare': 3,
+    '14 - Utility': 14,
+    '13 - Technology/science': 13,
+    '5 - Manufacturing/industrial': 5,
+    '12 - Services': 12
+}
+primary_use_options = list(primary_use_mapping.keys())
 
 # Initialize session state for prediction result if not already done
 if 'prediction' not in st.session_state:
@@ -35,7 +72,7 @@ st.markdown(
         <img src="https://lh3.googleusercontent.com/d/1oYttFfUcSt37Wojwuea-gW530BRZ0QIz" alt="windmill" style="position:absolute;left:-1rem;bottom:-2.5rem;width:400px;opacity:0.7;">
         <h1 class="title crimson-text-bold">XAI Enhanced Building Energy Demand Forecasting</h1>
         <img src="https://lh3.googleusercontent.com/d/1oYttFfUcSt37Wojwuea-gW530BRZ0QIz" alt="windmill" style="position:absolute;right:-1rem;bottom:-2.5rem;-webkit-transform:scaleX(-1);transform:scaleX(-1);width:400px;opacity:0.7">
-    </div
+    </div>
     """,
     unsafe_allow_html=True
 )
@@ -47,18 +84,20 @@ col1, col2 = st.columns(2, gap="medium")
 with col1:
     # Input fields in the left column
     st.markdown("<h2 class='header playwrite-de-grund-regular'>Input Features</h2>", unsafe_allow_html=True)
-    air_temperature = st.number_input("Air Temperature", value=0.0, format="%.1f")
-    building_id = st.number_input("Building ID", value=0, format="%d")
-    cloud_coverage = st.number_input("Cloud Coverage", value=0.0, format="%.1f")
-    dew_temperature = st.number_input("Dew Temperature", value=0.0, format="%.1f")
-    precip_depth_1_hr = st.number_input("Precipitation in One Hour", value=0.0, format="%.1f")
-    primary_use = st.number_input("Primary Use", value=0, format="%d")
-    sea_level_pressure = st.number_input("Sea Level Pressure", value=0.0, format="%.1f")
-    site_id = st.number_input("Site ID", value=0, format="%d")
+    
+    building_id = st.selectbox("Building ID", top_building_ids)
     square_feet = st.number_input("Square Feet", value=0.0, format="%.1f")
+    month = st.number_input("Month", value=1, min_value=1, max_value=12)
+    hour = st.number_input("Hour", value=0, min_value=0, max_value=23)
+    day = st.number_input("Day", value=1, min_value=1, max_value=31)
+    season = st.number_input("Season", value=0, min_value=0, max_value=3)
+    weekend = st.number_input("Weekend", value=0, min_value=0, max_value=1)
+    day_of_the_week = st.number_input("Day of the Week", value=0, min_value=0, max_value=6)
+    air_temperature = st.number_input("Air Temperature", value=0.0, format="%.1f")
+    dew_temperature = st.number_input("Dew Temperature", value=0.0, format="%.1f")
+    sea_level_pressure = st.number_input("Sea Level Pressure", value=0.0, format="%.1f")
     wind_direction = st.number_input("Wind Direction", value=0.0, format="%.1f")
     wind_speed = st.number_input("Wind Speed", value=0.0, format="%.1f")
-    meter = st.number_input("Meter", value=0, format="%d")
 
 with col2:
     # Output fields in the right column   
@@ -71,29 +110,70 @@ with col2:
         # Load the Transformer model
         transformer_model = tf.keras.models.load_model('D:/Downloads/final-year-project/notebooks/models/Transformer_ADAM')
 
+        # Load the scaler
+        scaler = load('D:/Downloads/final-year-project/notebooks/scaler.joblib')
+
         # Define the function used in the explainer
         def model_predict(data):
             # Reshape data to (batch_size, time_steps, features)
             data_reshaped = data.reshape((-1, time_steps, expected_feature_count))
             return transformer_model.predict(data_reshaped).flatten()
-
+        
         # Load the saved explainer
         explainer = load('D:/Downloads/final-year-project/notebooks/XAI_Explainer/mean_explainer.joblib')
+        
+        # Define the numerical and date pipelines
+        numerical_pipeline = Pipeline([ 
+            ('scaler', scaler)
+        ])
+
+        num_attribs = ['air_temperature','dew_temperature','sea_level_pressure','wind_direction','wind_speed', 'square_feet']
+        date_attribs = ['day', 'month', 'hour', 'day_of_the_week', 'season', 'weekend']
+
+        full_pipeline = ColumnTransformer([ 
+            ("num", numerical_pipeline, num_attribs),
+            ("date", "passthrough", date_attribs),
+        ])
 
         # Generate prediction based on input
-        input_data = np.array([[air_temperature, building_id, cloud_coverage, dew_temperature, 
-                                precip_depth_1_hr, primary_use, sea_level_pressure, site_id, 
-                                square_feet, wind_direction, wind_speed, meter]])
+        input_data = pd.DataFrame({
+            'square_feet': [float(square_feet)],
+            'air_temperature': [float(air_temperature)],
+            'dew_temperature': [float(dew_temperature)],
+            'sea_level_pressure': [float(sea_level_pressure)],
+            'wind_direction': [float(wind_direction)],
+            'wind_speed': [float(wind_speed)],
+            'day': [day],
+            'month': [month],
+            'hour': [hour],
+            'day_of_the_week': [day_of_the_week],
+            'season': [season],
+            'weekend': [weekend]
+        })
+
+        # Apply transformation pipeline to input data
+        input_data_transformed = full_pipeline.fit_transform(input_data)
+        st.write(f"Transformed Data: {input_data_transformed}") # Ensure to fit_transform on input data
 
         # Repeat input_data to match time steps expected by the model
-        input_data = np.repeat(input_data, time_steps, axis=0).reshape((1, time_steps, -1))
+        input_data_transformed = np.repeat(input_data_transformed, time_steps, axis=0).reshape((1, time_steps, -1))
 
         # Generate prediction
-        prediction = transformer_model.predict(input_data).flatten()[0]
-        st.session_state.prediction = prediction
+        prediction_scaled = transformer_model.predict(input_data_transformed).flatten()[0]
+        st.write(f"Scaled Prediction: {prediction_scaled}")
+
+        min_meter_reading = scaler.data_min_[0]
+        max_meter_reading = scaler.data_max_[0]
+        st.write(f"Min Value: {min_meter_reading}")
+        st.write(f"Max Value: {max_meter_reading}")
+
+        # Convert the prediction back to the original scale
+        prediction_original = prediction_scaled * (max_meter_reading - min_meter_reading) + min_meter_reading
+        st.write(f"Actual Prediction: {prediction_original}")
 
         # Generate SHAP values for the selected instances
-        shap_values = explainer.shap_values(input_data.reshape((1, -1)))
+        input_data_for_shap = input_data_transformed.reshape((1, -1))
+        shap_values = explainer.shap_values(input_data_for_shap)
         if isinstance(shap_values, list):
             shap_values = shap_values[0]
 
@@ -111,28 +191,17 @@ with col2:
 
         # Create a DataFrame to display SHAP values
         feature_columns_filtered = np.array([
-            'air_temperature', 'building_id', 'cloud_coverage', 'dew_temperature', 
-            'precip_depth_1_hr', 'primary_use', 'sea_level_pressure', 'site_id', 
-            'square_feet', 'wind_direction', 'wind_speed', 'meter'])[np.mean(np.abs(shap_values_mean_abs), axis=0) != 0]
+            'air_temperature', 'square_feet', 'dew_temperature', 
+            'sea_level_pressure', 'wind_direction', 'wind_speed', 
+            'day', 'month', 'hour', 'day_of_the_week', 'season', 'weekend'
+        ])[np.mean(np.abs(shap_values_mean_abs), axis=0) != 0]
 
         shap_values_df = pd.DataFrame(shap_values_mean_abs_aggregated, index=feature_columns_filtered, columns=['Mean Absolute SHAP Value'])
 
         # Remove features with mean SHAP value of 0
         shap_values_df = shap_values_df[shap_values_df['Mean Absolute SHAP Value'] != 0]
         st.session_state.shap_values_df = shap_values_df
-
-        # Update progress bar
-        progress_bar.progress(100)
-
-        st.balloons()
-        st.toast("Prediction completed!")
-
-    # Display the prediction and SHAP values if available in session state
-    if st.session_state.prediction is not None:
-        st.write(f"Predicted Energy Demand: {st.session_state.prediction}")
-
-    if st.session_state.shap_values_df is not None:
-        st.write(st.session_state.shap_values_df)
+        st.write(shap_values_df)
 
         # Plot SHAP summary with Plotly
         fig = px.bar(
