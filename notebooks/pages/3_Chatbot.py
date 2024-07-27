@@ -1,11 +1,15 @@
 import streamlit as st
+from pathlib import Path
 import google.generativeai as ggi
 
 # Load the API key from secrets
 api_key = st.secrets["GEMINI_API_KEY"]
 ggi.configure(api_key=api_key)
 
-with open('D:/Downloads/final-year-project/notebooks/stylesheets/style.css') as f:
+# Load custom CSS
+base_path = Path(__file__).parent
+stylesheet_file_path = (base_path / "../stylesheets/style.css").resolve()
+with open(stylesheet_file_path) as f:
     st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
 # Initialize the generative model and chat

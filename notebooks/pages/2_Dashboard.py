@@ -1,4 +1,5 @@
 import streamlit as st
+from pathlib import Path
 import pandas as pd
 from streamlit_vizzu import Data, Config, Style
 from ipyvizzustory import Story, Slide, Step
@@ -8,7 +9,9 @@ import plotly.graph_objects as go
 st.set_page_config(layout="wide")
 
 # Load custom CSS
-with open('D:/Downloads/final-year-project/notebooks/stylesheets/style.css') as f:
+base_path = Path(__file__).parent
+stylesheet_file_path = (base_path / "../stylesheets/style.css").resolve()
+with open(stylesheet_file_path) as f:
     st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
 # Define data types
@@ -50,14 +53,6 @@ def load_dataset(filepath, nrows=None):
 def preprocess_data(df):
     df['timestamp'] = pd.to_datetime(df['timestamp'])
     df['cloud_coverage'] = df['cloud_coverage'].astype(str)
-    # df['wind_speed'] = df['wind_speed'].astype(str)
-    # df['wind_direction'] = df['wind_direction'].astype(str)
-    # df['day'] = df['day'].astype(str)
-    # df['hour'] = df['hour'].astype(str)
-    # df['primary_use'] = df['primary_use'].astype(str)
-    # df['meter'] = df['meter'].astype(str)
-    # df['dew_temperature'] = df['dew_temperature'].astype(str)
-    # df['air_temperature'] = df['air_temperature'].astype(str)
     return df
 
 def create_indicator_chart(value, title):
@@ -1027,7 +1022,7 @@ def create_donut_chart(high_consumption_percentage, low_consumption_percentage):
     return fig
 
 # Load a subset of the dataset to avoid memory issues
-file_path = 'D:/Downloads/final-year-project/data/dashboard_data.csv'
+file_path = (base_path / "../../data/dashboard_data.csv").resolve()
 df = load_dataset(file_path)  # Load data
 if df.empty:
     st.error("The dataset is empty or could not be loaded.")
