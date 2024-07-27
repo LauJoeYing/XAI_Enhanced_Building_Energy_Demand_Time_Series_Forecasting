@@ -35,28 +35,6 @@ data_path = 'D:/Downloads/final-year-project/notebooks/filtered_data.csv'
 df = load_data(data_path, nrows=8000) 
 
 top_building_ids = df['building_id'].unique().tolist()
-top_site_ids = df['site_id'].unique().tolist()
-
-# Primary use mapping
-primary_use_mapping = {
-    '0 - Education': 0,
-    '4 - Lodging/residential': 4,
-    '6 - Office': 6,
-    '1 - Entertainment/Public Assembly': 1,
-    '7 - Other': 7,
-    '11 - Retail': 11,
-    '8 - Parking': 8,
-    '9 - Public services': 9,
-    '15 - Warehouse/storage': 15,
-    '2 - Food sales and service': 2,
-    '10 - Religious worship': 10,
-    '3 - Healthcare': 3,
-    '14 - Utility': 14,
-    '13 - Technology/science': 13,
-    '5 - Manufacturing/industrial': 5,
-    '12 - Services': 12
-}
-primary_use_options = list(primary_use_mapping.keys())
 
 # Initialize session state for prediction result if not already done
 if 'prediction' not in st.session_state:
@@ -78,13 +56,15 @@ st.markdown(
 )
 st.markdown("<div class='rainbow'></div>", unsafe_allow_html=True)
 
+# Add subheading mentioning supervisor and second marker
+st.markdown("<h2 class='subheading'>Supervised by Dr. Preethi Subramanian | Second Marker: Assoc. Prof. Dr. Imran Medi</h2>", unsafe_allow_html=True)
+
 # Create two columns
 col1, col2 = st.columns(2, gap="medium")
 
 with col1:
     # Input fields in the left column
     st.markdown("<h2 class='header playwrite-de-grund-regular'>Input Features</h2>", unsafe_allow_html=True)
-    
     building_id = st.selectbox("Building ID", top_building_ids)
     square_feet = st.number_input("Square Feet", value=0.0, format="%.1f")
     month = st.number_input("Month", value=1, min_value=1, max_value=12)
@@ -120,7 +100,7 @@ with col2:
             return transformer_model.predict(data_reshaped).flatten()
         
         # Load the saved explainer
-        explainer = load('D:/Downloads/final-year-project/notebooks/XAI_Explainer/mean_explainer.joblib')
+        # explainer = load('D:/Downloads/final-year-project/notebooks/XAI_Explainer/mean_explainer.joblib')
         
         # Define the numerical and date pipelines
         numerical_pipeline = Pipeline([ 
@@ -171,51 +151,53 @@ with col2:
         prediction_original = prediction_scaled * (max_meter_reading - min_meter_reading) + min_meter_reading
         st.write(f"Actual Prediction: {prediction_original}")
 
+        st.toast("Generating XAI SHAP Values...")
+
         # Generate SHAP values for the selected instances
-        input_data_for_shap = input_data_transformed.reshape((1, -1))
-        shap_values = explainer.shap_values(input_data_for_shap)
-        if isinstance(shap_values, list):
-            shap_values = shap_values[0]
+        # input_data_for_shap = input_data_transformed.reshape((1, -1))
+        # shap_values = explainer.shap_values(input_data_for_shap)
+        # if isinstance(shap_values, list):
+        #     shap_values = shap_values[0]
 
-        # Reshape SHAP values to original time-series format
-        shap_values_reshaped = np.array(shap_values).reshape(1, time_steps, expected_feature_count)
+        # # Reshape SHAP values to original time-series format
+        # shap_values_reshaped = np.array(shap_values).reshape(1, time_steps, expected_feature_count)
 
-        # Mean of Absolute Values across time steps
-        shap_values_mean_abs = np.mean(np.abs(shap_values_reshaped), axis=1)
+        # # Mean of Absolute Values across time steps
+        # shap_values_mean_abs = np.mean(np.abs(shap_values_reshaped), axis=1)
 
-        # Filter out features with mean SHAP value of 0 before aggregation
-        shap_values_filtered = shap_values_mean_abs[:, np.mean(np.abs(shap_values_mean_abs), axis=0) != 0]
+        # # Filter out features with mean SHAP value of 0 before aggregation
+        # shap_values_filtered = shap_values_mean_abs[:, np.mean(np.abs(shap_values_mean_abs), axis=0) != 0]
 
-        # Aggregate the mean absolute SHAP values across all instances
-        shap_values_mean_abs_aggregated = np.mean(shap_values_filtered, axis=0)
+        # # Aggregate the mean absolute SHAP values across all instances
+        # shap_values_mean_abs_aggregated = np.mean(shap_values_filtered, axis=0)
 
-        # Create a DataFrame to display SHAP values
-        feature_columns_filtered = np.array([
-            'air_temperature', 'square_feet', 'dew_temperature', 
-            'sea_level_pressure', 'wind_direction', 'wind_speed', 
-            'day', 'month', 'hour', 'day_of_the_week', 'season', 'weekend'
-        ])[np.mean(np.abs(shap_values_mean_abs), axis=0) != 0]
+        # # Create a DataFrame to display SHAP values
+        # feature_columns_filtered = np.array([
+        #     'air_temperature', 'square_feet', 'dew_temperature', 
+        #     'sea_level_pressure', 'wind_direction', 'wind_speed', 
+        #     'day', 'month', 'hour', 'day_of_the_week', 'season', 'weekend'
+        # ])[np.mean(np.abs(shap_values_mean_abs), axis=0) != 0]
 
-        shap_values_df = pd.DataFrame(shap_values_mean_abs_aggregated, index=feature_columns_filtered, columns=['Mean Absolute SHAP Value'])
+        # shap_values_df = pd.DataFrame(shap_values_mean_abs_aggregated, index=feature_columns_filtered, columns=['Mean Absolute SHAP Value'])
 
-        # Remove features with mean SHAP value of 0
-        shap_values_df = shap_values_df[shap_values_df['Mean Absolute SHAP Value'] != 0]
-        st.session_state.shap_values_df = shap_values_df
-        st.write(shap_values_df)
+        # # Remove features with mean SHAP value of 0
+        # shap_values_df = shap_values_df[shap_values_df['Mean Absolute SHAP Value'] != 0]
+        # st.session_state.shap_values_df = shap_values_df
+        # st.write(shap_values_df)
 
-        # Plot SHAP summary with Plotly
-        fig = px.bar(
-            st.session_state.shap_values_df,
-            x=st.session_state.shap_values_df.index,
-            y='Mean Absolute SHAP Value',
-            title='SHAP Summary Plot (Mean of Absolute Values)',
-            text='Mean Absolute SHAP Value',
-            color='Mean Absolute SHAP Value',
-            color_continuous_scale='Turbo'
-        )
+        # # Plot SHAP summary with Plotly
+        # fig = px.bar(
+        #     st.session_state.shap_values_df,
+        #     x=st.session_state.shap_values_df.index,
+        #     y='Mean Absolute SHAP Value',
+        #     title='SHAP Summary Plot (Mean of Absolute Values)',
+        #     text='Mean Absolute SHAP Value',
+        #     color='Mean Absolute SHAP Value',
+        #     color_continuous_scale='Turbo'
+        # )
 
-        # Update layout to show mean SHAP values on each bar
-        fig.update_traces(texttemplate='%{text:.4f}', textposition='outside')
-        fig.update_layout(uniformtext_minsize=8, uniformtext_mode='hide')
+        # # Update layout to show mean SHAP values on each bar
+        # fig.update_traces(texttemplate='%{text:.4f}', textposition='outside')
+        # fig.update_layout(uniformtext_minsize=8, uniformtext_mode='hide')
 
-        st.plotly_chart(fig, use_container_width=True)
+        # st.plotly_chart(fig, use_container_width=True)

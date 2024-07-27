@@ -7,6 +7,10 @@ body, .stApp {
     font-family: 'Satoshi', sans-serif;
 }
 
+text {
+    text-shadow: none !important;
+}
+
 .title {
     z-index: 1;
     max-width: 70%;
@@ -17,6 +21,13 @@ body, .stApp {
     margin: 0 auto 1.25rem;
     padding: 0;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); 
+}
+
+.subheading {
+    text-align: center;
+    font-size: 1.0rem;
+    color: dimgray;
+    margin: 0.5rem 0;
 }
 
 .header {
@@ -58,6 +69,69 @@ body, .stApp {
     font-family: "Crimson Text", serif;
     font-weight: 700;
     font-style: normal;
+}
+
+.custom-title {
+    max-width: 95%;
+    padding: 0;
+    font-family: 'Georgia', serif;
+    font-size: 2.5rem;
+    color: beige;
+    text-align: center;
+    margin: 0 auto 1.25rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.e1nzilvr4 > .custom-chatbot-title {
+    max-width: 95%;
+    padding: 0;
+    font-size: 43px !important; 
+    color: beige;
+    text-align: center;
+    margin: 0 auto 1.25rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    font-weight: bold; /* Make the text bold */
+    white-space: nowrap; /* Ensure the title is aligned in one line */
+}
+
+.e1nzilvr4 > .user-msg {
+    font-size: 12px !important;
+    color: #1A5276;
+    font-family: "Playwrite DE Grund", cursive;
+    margin: 10px 0;
+    padding: 10px;
+    border: 2px solid #ffffff;
+    border-radius: 10px;
+    background-color: #f1f1f1;
+}
+
+.e1nzilvr4 > .bot-msg {
+    font-size: 12px !important;
+    color: #1E8449;
+    font-family: "Playwrite DE Grund", cursive;
+    margin: 10px 0;
+    padding: 10px;
+    border: 2px solid #ffffff;
+    border-radius: 10px;
+    background-color: #e0ffe0;
+}
+
+.e1nzilvr4 > .message-container {
+    margin-bottom: 10px; /* Space between messages */
+}
+
+
+.e1nzilvr4 > .input-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    position: fixed;
+    font-family: 'Georgia';
+    bottom: 10px;
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-top: 1px solid #ddd;
 }
 
 .playwrite-de-grund-extra-light {
@@ -103,4 +177,19 @@ body, .stApp {
 @keyframes rainbow{
 	0% {background-position: 0;}
 	100% {background-position: 800% 0;}
+}
+
+.stMarkdown p {
+    font-family: 'Georgia', serif;
+}
+.stButton button {
+    width: 100%;
+    font-family: 'Georgia', serif;
+}
+.stFileUploader {
+    width: 100%;
+}
+.stSidebar {
+    background-color: #f8f9fa;
+    padding: 20px;
 }

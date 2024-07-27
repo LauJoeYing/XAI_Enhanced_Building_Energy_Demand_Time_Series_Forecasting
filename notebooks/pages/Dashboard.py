@@ -1,49 +1,15 @@
 import streamlit as st
 import pandas as pd
-from scipy import stats
-from streamlit_vizzu import VizzuChart, Data, Config, Style
+from streamlit_vizzu import Data, Config, Style
 from ipyvizzustory import Story, Slide, Step
 import plotly.graph_objects as go
-import plotly.express as px
 
 # Set Streamlit layout to wide
 st.set_page_config(layout="wide")
 
-# Custom CSS for styling
-custom_css = """
-<style>
-    .stApp {
-        background-image: linear-gradient(135deg, #A9F1DF, #FFBBBB);
-        background-color: transparent;
-        padding: 0;
-    }
-    .custom-title {
-        font-family: 'Georgia', serif;
-        font-size: 2.5rem;
-        color: #ffffff;
-        text-align: center;
-        margin-top: 20px;
-        margin-bottom: 20px;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-    }
-    .stMarkdown p {
-        font-family: 'Georgia', serif;
-    }
-    .stButton button {
-        width: 100%;
-        font-family: 'Georgia', serif;
-    }
-    .stFileUploader {
-        width: 100%;
-    }
-    .stSidebar {
-        background-color: #f8f9fa;
-        padding: 20px;
-    }
-</style>
-"""
-
-st.markdown(custom_css, unsafe_allow_html=True)
+# Load custom CSS
+with open('D:/Downloads/final-year-project/notebooks/stylesheets/style.css') as f:
+    st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
 # Define data types
 d_types = {
@@ -84,14 +50,14 @@ def load_dataset(filepath, nrows=None):
 def preprocess_data(df):
     df['timestamp'] = pd.to_datetime(df['timestamp'])
     df['cloud_coverage'] = df['cloud_coverage'].astype(str)
-    df['wind_speed'] = df['wind_speed'].astype(str)
-    df['wind_direction'] = df['wind_direction'].astype(str)
-    df['day'] = df['day'].astype(str)
-    df['hour'] = df['hour'].astype(str)
-    df['primary_use'] = df['primary_use'].astype(str)
-    df['meter'] = df['meter'].astype(str)
-    df['dew_temperature'] = df['dew_temperature'].astype(str)
-    df['air_temperature'] = df['air_temperature'].astype(str)
+    # df['wind_speed'] = df['wind_speed'].astype(str)
+    # df['wind_direction'] = df['wind_direction'].astype(str)
+    # df['day'] = df['day'].astype(str)
+    # df['hour'] = df['hour'].astype(str)
+    # df['primary_use'] = df['primary_use'].astype(str)
+    # df['meter'] = df['meter'].astype(str)
+    # df['dew_temperature'] = df['dew_temperature'].astype(str)
+    # df['air_temperature'] = df['air_temperature'].astype(str)
     return df
 
 def create_indicator_chart(value, title):
@@ -134,14 +100,34 @@ def create_story_one(filtered_df):
                 {
                     "paddingLeft": "3em",
                     "plot": {
+                        "paddingLeft": "1em",
                         "backgroundColor": "rgba(255, 255, 255, 0.5)",
-                        "yAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
-                        "xAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
+                        "yAxis": {
+                            "label": {
+                                "numberScale": "shortScaleSymbolUS",
+                                "color": "#000000",
+                                "fontSize": "1.5em"
+                            },
+                            "title": {
+                                "color": "#000000",
+                                "paddingLeft": "5em",
+                                "fontSize": "1.4em"
+                            },
+                        },
+                        "xAxis": {
+                            "label": {
+                                "numberScale": "shortScaleSymbolUS",
+                                "color": "#000000",
+                                "fontSize": "1.7em"
+                            },
+                        },
                         "marker": {
                             "label": {
                                 "numberFormat": "prefixed",
                                 "maxFractionDigits": "1",
                                 "numberScale": "shortScaleSymbolUS",
+                                "color": "#000000",
+                                "fontSize": "1.2em"
                             },
                             "rectangleSpacing": None,
                             "circleMinRadius": 0.005,
@@ -150,6 +136,14 @@ def create_story_one(filtered_df):
                         },
                     },
                     "fontFamily": "Georgia", 
+                    "title": {
+                        "color": "#000000",
+                        "fontSize": "2.2em"
+                    },
+                    "subtitle": {
+                        "color": "#000000",
+                        "fontSize": "1.3em"
+                    },
                 }
             )
         )
@@ -164,7 +158,7 @@ def create_story_one(filtered_df):
                 {
                     "coordSystem": "cartesian",
                     "geometry": "circle",
-                    "title": "Overview: High Consumption Meter Reading by Month with meter reading >= 987.20",
+                    "title": "High Consumption Meter Reading by Month with meter reading >= 987.20",
                     "x": "month",
                     "y": {
                         "set": "mean(meter_reading)",
@@ -185,21 +179,40 @@ def create_story_one(filtered_df):
                 {
                     "plot": {
                         "backgroundColor": "rgba(255, 255, 255, 0.5)",
-                        "yAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
-                        "xAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
+                        "yAxis": {
+                            "label": {
+                                "numberScale": "shortScaleSymbolUS",
+                                "fontSize": "0.9em"
+                            }
+                        },
+                        "xAxis": {
+                            "label": {
+                                "numberScale": "shortScaleSymbolUS",
+                                "fontSize": "0.9em"
+                            }
+                        },
                         "marker": {
                             "label": {
                                 "numberFormat": "prefixed",
                                 "maxFractionDigits": "1",
                                 "numberScale": "shortScaleSymbolUS",
+                                "fontSize": "0.85em"
                             },
                             "rectangleSpacing": 0,
                             "circleMinRadius": 0.02,
                             "borderOpacity": 1,
                             "colorPalette": "#FFB3BA #FFDFBA #FFFFBA #BAFFC9 #BAE1FF #CBAACB #FFDAC1 #FF9AA2 #B5EAD7 #E2F0CB #FFB7B2 #FFDAC1",
+                            "guides": {
+                                "color": "#A9A9A9",
+                                "lineWidth": 5,
+                            },
                         },
                     },
-                    "fontFamily": "Georgia",   
+                    "fontFamily": "Georgia",
+                    "title": {
+                        "color": "#000000",
+                        "fontSize": "0.9em"
+                    },
                 }
             )
         )
@@ -239,7 +252,7 @@ def create_story_two(filtered_df):
                 {
                     "plot": {
                         "yAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
-                        "xAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
+                        "xAxis": {"label": {"numberScale": "shortScaleSymbolUS"}, "title": { "color": "#000000" }},
                         "marker": {
                             "label": {
                                 "numberFormat": "prefixed",
@@ -253,6 +266,12 @@ def create_story_two(filtered_df):
                         },
                     },
                     "fontFamily": "Georgia",
+                    "legend": {
+                        "label": {
+                            "color": "#000000",
+                            "fontSize": "1.5em"
+                        },
+                    }
                 }
             )
         )
@@ -301,6 +320,10 @@ def create_story_two(filtered_df):
                         },
                     },
                     "fontFamily": "Georgia",
+                    "title": {
+                        "color": "#000000",
+                        "fontSize": "1.6em"
+                    },
                 }
             ),
         )
@@ -323,7 +346,7 @@ def create_story_three(filtered_df):
                 {
                     "coordSystem": "polar",
                     "geometry": "rectangle",
-                    "x": "wind_direction",
+                    "x": "wind_direction_binned",
                     "y": {
                         "set": "mean(meter_reading)",
                         "range": {"min": "auto", "max": "auto"},
@@ -343,8 +366,21 @@ def create_story_three(filtered_df):
             Style(
                 {
                     "plot": {
-                        "yAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
-                        "xAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
+                        "paddingLeft": "3em",
+                        "yAxis": {
+                            "label": {
+                                "numberScale": "shortScaleSymbolUS",
+                            },
+                            "title": {
+                                "color": "#000000"
+                            },
+                        },
+                        "xAxis": {
+                            "label": {
+                                "numberScale": "shortScaleSymbolUS",
+                                "color": "#000000",
+                            },
+                        },
                         "marker": {
                             "label": {
                                 "numberFormat": "prefixed",
@@ -358,6 +394,15 @@ def create_story_three(filtered_df):
                         },
                     },
                     "fontFamily": "Georgia",
+                    "legend": {
+                        "label": {
+                            "color": "#000000",
+                        },
+                    "title": {
+                        "color": "#000000",
+                        "fontSize": "2.0em"
+                    },
+                    }
                 }
             ),
         )
@@ -372,7 +417,7 @@ def create_story_three(filtered_df):
                     "geometry": "circle",
                     "x": None,
                     "y": {"set": None, "range": {"min": "auto", "max": "auto"}},
-                    "color": "wind_speed",
+                    "color": "wind_speed_binned",
                     "lightness": None,
                     "size": ["wind_speed", "mean(meter_reading)"],
                     "noop": None,
@@ -398,10 +443,14 @@ def create_story_three(filtered_df):
                             "rectangleSpacing": None,
                             "circleMinRadius": 0.005,
                             "borderOpacity": 1,
-                            "colorPalette": "#AEC6CF #FFB347 #FF6961 #77DD77 #CFCFC4 #F49AC2 #B39EB5 #FFB347 #FFD1DC #FDFD96 #C23B22 #D6A2E8 #87CEEB #FFB3BA #FFDFBA #FFFFBA #BAFFC9 #BAE1FF",
+                            "colorPalette": "#FADADD #FFB7B2 #FFDAC1 #FFEBBB #FFFFD1 #D4EFDF #B5EAD7 #C9C9FF #FDFD96 #BFD6FF #E6E6FA",
                         },
                     },
                     "fontFamily": "Georgia",
+                    "title": {
+                        "color": "#000000",
+                        "fontSize": "1.2em"
+                    },
                 }
             ),
         )
@@ -409,8 +458,6 @@ def create_story_three(filtered_df):
     story_three.add_slide(slide2)
 
     return story_three
-
-
 
 def create_story_four(filtered_df):
     data = Data()
@@ -427,7 +474,7 @@ def create_story_four(filtered_df):
                     "coordSystem": "polar",
                     "geometry": "rectangle",
                     "x": "mean(meter_reading)",
-                    "y": {"set": "day", "range": {"min": "-50%", "max": "auto"}},
+                    "y": {"set": "day_binned", "range": {"min": "-50%", "max": "auto"}},
                     "color": None,
                     "lightness": None,
                     "size": None,
@@ -443,8 +490,24 @@ def create_story_four(filtered_df):
             Style(
                 {
                     "plot": {
-                        "yAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
-                        "xAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
+                        "yAxis": {
+                            "label": {
+                                "numberScale": "shortScaleSymbolUS",
+                                "color": "#000000",
+                            },
+                            "title": {
+                                "color": "#000000",
+                            },
+                        },
+                        "xAxis": {
+                            "label": {
+                                "numberScale": "shortScaleSymbolUS",
+                                "color": "#000000",
+                            },
+                            "title": {
+                                "color": "#000000",
+                            },
+                        },
                         "marker": {
                             "label": {
                                 "numberFormat": "prefixed",
@@ -456,7 +519,12 @@ def create_story_four(filtered_df):
                             "borderOpacity": 1,
                             "colorPalette": "#C1E1C1",
                         },
-                    }
+                    },
+                    "fontFamily": "Georgia",
+                    "title": {
+                        "color": "#000000",
+                        "fontSize": "2.2em"
+                    },
                 }
             ),
         )
@@ -471,7 +539,7 @@ def create_story_four(filtered_df):
                 {
                     "coordSystem": "polar",
                     "geometry": "rectangle",
-                    "x": "hour",
+                    "x": "hour_binned",
                     "y": {
                         "set": "mean(meter_reading)",
                         "range": {"min": "auto", "max": "auto"},
@@ -506,6 +574,10 @@ def create_story_four(filtered_df):
                         },
                     },
                     "fontFamily": "Georgia",
+                    "title": {
+                        "color": "#000000",
+                        "fontSize": "1.2em"
+                    },
                 }
             ),
         )
@@ -526,41 +598,63 @@ def create_story_five(filtered_df):
         Step(
             Config(
                 {
-                    "coordSystem": "cartesian",
+                    "coordSystem": "polar",
                     "geometry": "rectangle",
-                    "x": "meter",
-                    "y": {
-                        "set": "mean(meter_reading)",
-                        "range": {"min": "auto", "max": "110%"},
-                    },
+                    "x": ["meter", "mean(meter_reading)"],
+                    "y": {"set": None, "range": {"min": "-200%", "max": "100%"}},
                     "color": "meter",
                     "lightness": None,
                     "size": None,
                     "noop": None,
                     "split": False,
                     "align": "none",
-                    "orientation": "horizontal",
+                    "orientation": "vertical",
                     "label": None,
                     "sort": "none",
-                }
+                    "title": "Meter Reading by Meter Type",
+               }
             ),
             Style(
                 {
                     "plot": {
-                        "yAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
-                        "xAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
+                        "yAxis": {
+                            "label": {
+                                "numberScale": "shortScaleSymbolUS",
+                                "color": "#000000",
+                            },
+                            "title": {
+                                "color": "#000000",
+                            },
+                        },
+                        "xAxis": {
+                            "label": {
+                                "numberScale": "shortScaleSymbolUS",
+                                "color": "#000000",
+                            },
+                            "title": {
+                                "color": "#000000",
+                            },
+                        },
                         "marker": {
                             "label": {
                                 "numberFormat": "prefixed",
                                 "maxFractionDigits": "1",
                                 "numberScale": "shortScaleSymbolUS",
+                                "fontSize": "1.2em"
                             },
                             "rectangleSpacing": None,
                             "circleMinRadius": 0.005,
                             "borderOpacity": 1,
-                            "colorPalette": "#694db1 #029a67 #fa7f16 #f1c226 #d06c29 #d19565 #f1474d #b6a720 #807126 #f4714d #b55ca9 #f58ffc #bc458e #9c7cee #9c4fb4 #6f9ffc #5e6cbc #79858d #a99789 #4c7350 #ae7a43 #7bb057 #497655 #9d1069 #ae3894 #b20000",
+                            "colorPalette": "#f7e7b4 #ffb3ba",
                         },
-                    }
+                    },
+                    "fontFamily": "Georgia",
+                    "legend": {
+                        "label": {
+                            "color": "#000000",
+                            "fontSize": "1.0em"
+                        }
+                    },
                 }
             ),
         )
@@ -573,7 +667,7 @@ def create_story_five(filtered_df):
                 {
                     "coordSystem": "cartesian",
                     "geometry": "rectangle",
-                    "x": "dew_temperature",
+                    "x": "primary_use",
                     "y": {
                         "set": "mean(meter_reading)",
                         "range": {"min": "auto", "max": "110%"},
@@ -587,12 +681,21 @@ def create_story_five(filtered_df):
                     "orientation": "horizontal",
                     "label": None,
                     "sort": "none",
+                    "title": "Meter Reading by Primary Use",
                 }
             ),
             Style(
                 {
                     "plot": {
-                        "yAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
+                        "paddingLeft": "3em",
+                        "yAxis": {
+                            "label": {
+                                "numberScale": "shortScaleSymbolUS"
+                            },
+                            "title": {
+                                "paddingLeft": "5em",
+                            },
+                        },
                         "xAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
                         "marker": {
                             "label": {
@@ -603,9 +706,14 @@ def create_story_five(filtered_df):
                             "rectangleSpacing": None,
                             "circleMinRadius": 0.005,
                             "borderOpacity": 1,
-                            "colorPalette": "#4171cd",
+                            "colorPalette": "#FFB3BA #FFDFBA #FFFFBA #BAFFC9 #BAE1FF #CBAACB #FFDAC1 #FF9AA2 #B5EAD7 #E2F0CB #FFB7B2 #FFDAC1",
                         },
-                    }
+                    },
+                    "fontFamily": "Georgia",
+                    "title": {
+                        "color": "#000000",
+                        "fontSize": "1.2em"
+                    },
                 }
             ),
         )
@@ -624,12 +732,11 @@ def create_story_six(filtered_df):
     # Slide 1: Overview of Meter Readings by Day
     slide1 = Slide(
         Step(
-            Data.filter(None),
             Config(
                 {
                     "coordSystem": "cartesian",
                     "geometry": "area",
-                    "x": "air_temperature",
+                    "x": "air_temperature_binned",
                     "y": {
                         "set": "mean(meter_reading)",
                         "range": {"min": "auto", "max": "110%"},
@@ -643,13 +750,32 @@ def create_story_six(filtered_df):
                     "orientation": "horizontal",
                     "label": None,
                     "sort": "none",
+                    "title": "Meter Reading by Air Temperature",
                 }
             ),
             Style(
                 {
                     "plot": {
-                        "yAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
-                        "xAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
+                        "paddingLeft": "3em",
+                        "yAxis": {
+                            "label": {
+                                "numberScale": "shortScaleSymbolUS",
+                                "color": "#000000",
+                            },
+                            "title": {
+                                "color": "#000000",
+                                "paddingLeft": "5em",
+                            },
+                        },
+                        "xAxis": {
+                            "label": {
+                                "numberScale": "shortScaleSymbolUS",
+                                "color": "#000000",
+                            },
+                            "title": {
+                                "color": "#000000",
+                            },
+                        },
                         "marker": {
                             "label": {
                                 "numberFormat": "prefixed",
@@ -659,9 +785,10 @@ def create_story_six(filtered_df):
                             "rectangleSpacing": None,
                             "circleMinRadius": 0.005,
                             "borderOpacity": 1,
-                            "colorPalette": "#4171cd",
+                            "colorPalette": "#AEC6CF",
                         },
-                    }
+                    },
+                    "fontFamily": "Georgia",
                 }
             ),
         )
@@ -674,7 +801,7 @@ def create_story_six(filtered_df):
                 {
                     "coordSystem": "cartesian",
                     "geometry": "rectangle",
-                    "x": "dew_temperature",
+                    "x": "dew_temperature_binned",
                     "y": {
                         "set": "mean(meter_reading)",
                         "range": {"min": "auto", "max": "110%"},
@@ -688,6 +815,7 @@ def create_story_six(filtered_df):
                     "orientation": "horizontal",
                     "label": None,
                     "sort": "none",
+                    "title": "Meter Reading by Dew Temperature",
                 }
             ),
             Style(
@@ -704,9 +832,14 @@ def create_story_six(filtered_df):
                             "rectangleSpacing": None,
                             "circleMinRadius": 0.005,
                             "borderOpacity": 1,
-                            "colorPalette": "#4171cd",
+                            "colorPalette": "#AEC6CF",
                         },
-                    }
+                    },
+                    "fontFamily": "Georgia",
+                    "title": {
+                        "color": "#000000",
+                        "fontSize": "1.2em"
+                    },
                 }
             ),
         )
@@ -714,31 +847,36 @@ def create_story_six(filtered_df):
     story_six.add_slide(slide2)
     return story_six
 
+
 def create_story_seven(filtered_df):
     data = Data()
-    data.add_df(filtered_df)
+    
+    # Get top 15 highest mean meter_reading by square_feet_binned
+    top_15_df = filtered_df.groupby('square_feet_binned').mean().nlargest(15, 'meter_reading').reset_index()
+    
+    data.add_df(top_15_df)
     story_seven = Story(data=data)
     story_seven.set_size("100%", "600px")
     story_seven.set_feature("tooltip", True)
 
     slide1 = Slide(
         Step(
-            Data.filter(None),
             Config(
                 {
                     "coordSystem": "cartesian",
                     "geometry": "rectangle",
                     "x": None,
                     "y": {"set": None, "range": {"min": "auto", "max": "auto"}},
-                    "color": "square_feet",
+                    "color": "square_feet_binned",
                     "lightness": None,
-                    "size": ["square_feet", "mean(meter_reading)"],
+                    "size": ["square_feet_binned", "mean(meter_reading)"],
                     "noop": None,
                     "split": False,
                     "align": "none",
                     "orientation": "horizontal",
-                    "label": None,
+                    "label": "square_feet_binned",
                     "sort": "none",
+                    "title": "Meter Reading by Square Feet",
                 }
             ),
             Style(
@@ -751,19 +889,32 @@ def create_story_seven(filtered_df):
                                 "numberFormat": "prefixed",
                                 "maxFractionDigits": "1",
                                 "numberScale": "shortScaleSymbolUS",
+                                "fontSize": "1.2em"
                             },
                             "rectangleSpacing": None,
                             "circleMinRadius": 0.005,
                             "borderOpacity": 1,
-                            "colorPalette": "#03ae71 #f4941b #f4c204 #d49664 #f25456 #9e67ab #bca604 #846e1c #fc763c #b462ac #f492fc #bc4a94 #9c7ef4 #9c52b4 #6ca2fc #5c6ebc #7c868c #ac968c #4c7450 #ac7a4c #7cae54 #4c7450 #9c1a6c #ac3e94 #b41204",
+                            "colorPalette": "#A3B1E1 #77D9A8 #FFAB76 #FFE29E #E0B982 #D6C0AE #FF9DAA #D9E97B #B1A05C #FFB591 #CE91CB #FFCAF7 #D997B7 #C9A4FF #D1A8D8 #A2C4FF #96A5D9 #BEC4C4 #D4C6A9 #9DC7B1 #D9C6A9 #A5D0B5 #8BC5A3 #CE97A6 #E2A1C8 #FF9E99",
                         },
-                    }
+                    },
+                    "fontFamily": "Georgia",
+                    "legend": {
+                        "paddingLeft": "0.2em",
+                        "label": {
+                            "color": "#000000",
+                            "fontSize": "1.7em"
+                        },
+                        "title": {
+                            "color": "#000000",
+                        }
+                    },
                 }
             ),
         )
     )
     story_seven.add_slide(slide1)
     return story_seven
+
 
 def create_story_eight(filtered_df):
     data = Data()
@@ -774,17 +925,16 @@ def create_story_eight(filtered_df):
 
     slide1 = Slide(
         Step(
-            Data.filter(None),
             Config(
                 {
                     "coordSystem": "cartesian",
-                    "geometry": "rectangle",
-                    "x": "mean(meter_reading)",
-                    "y": {
-                        "set": "sea_level_pressure",
-                        "range": {"min": "auto", "max": "auto"},
+                    "geometry": "circle",
+                    "x": {
+                        "set": "mean(meter_reading)",
+                        "range": {"min": "auto", "max": "110%"},
                     },
-                    "color": "sea_level_pressure",
+                    "y": "precip_depth_1_hr_binned",
+                    "color": "precip_depth_1_hr_binned",
                     "lightness": None,
                     "size": None,
                     "noop": None,
@@ -793,25 +943,47 @@ def create_story_eight(filtered_df):
                     "orientation": "vertical",
                     "label": None,
                     "sort": "none",
+                    "title": "Meter Reading by Precipitation (1 hr)",
                 }
             ),
             Style(
                 {
                     "plot": {
-                        "yAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
-                        "xAxis": {"label": {"numberScale": "shortScaleSymbolUS"}},
+                        "yAxis": {
+                            "label": {
+                                "numberScale": "shortScaleSymbolUS",
+                                "color": "#000000",
+                            },
+                            "title": {
+                                "color": "#000000",
+                            },
+                        },
+                        "xAxis": {
+                            "label": {
+                                "numberScale": "shortScaleSymbolUS",
+                                "color": "#000000",
+                            },
+                            "title": {
+                                "color": "#000000",
+                            },
+                        },
                         "marker": {
                             "label": {
                                 "numberFormat": "prefixed",
                                 "maxFractionDigits": "1",
                                 "numberScale": "shortScaleSymbolUS",
                             },
-                            "rectangleSpacing": None,
-                            "circleMinRadius": 0.005,
+                            "rectangleSpacing": 0,
+                            "circleMinRadius": 0.02,
                             "borderOpacity": 1,
-                            "colorPalette": "#03ae71 #f4941b #f4c204 #d49664 #f25456 #9e67ab #bca604 #846e1c #fc763c #b462ac #f492fc #bc4a94 #9c7ef4 #9c52b4 #6ca2fc #5c6ebc #7c868c #ac968c #4c7450 #ac7a4c #7cae54 #4c7450 #9c1a6c #ac3e94 #b41204",
+                            "colorPalette": "#FFB3BA #FFDFBA #FFFFBA #BAFFC9 #BAE1FF #CBAACB #FFDAC1 #FF9AA2 #B5EAD7 #E2F0CB #FFB7B2 #FFDAC1",
+                            "guides": {
+                                "color": "#A9A9A9",
+                                "lineWidth": 5,
+                            },
                         },
-                    }
+                    },
+                    "fontFamily": "Georgia",
                 }
             ),
         )
@@ -825,7 +997,7 @@ def create_donut_chart(high_consumption_percentage, low_consumption_percentage):
         labels=['High Consumption', 'Low Consumption'],
         values=[high_consumption_percentage, low_consumption_percentage],
         hole=.6,
-        marker_colors=['#FF9999', '#99CC99'],
+        marker_colors=['#FAA0A0', '#DAFFE7'],
         textinfo='none'
     )])
 
@@ -855,7 +1027,7 @@ def create_donut_chart(high_consumption_percentage, low_consumption_percentage):
     return fig
 
 # Load a subset of the dataset to avoid memory issues
-file_path = 'D:/Downloads/final-year-project/data/final_subset_train_data.csv'
+file_path = 'D:/Downloads/final-year-project/data/dashboard_data.csv'
 df = load_dataset(file_path)  # Load data
 if df.empty:
     st.error("The dataset is empty or could not be loaded.")
@@ -864,7 +1036,7 @@ else:
 
 # Define filters
 filters = {}
-excluded_columns = ["Unnamed: 0", "building_id"]
+excluded_columns = ["Unnamed: 0", "building_id", "square_feet_binned", "dew_temperature_binned", "air_temperature_binned", "hour_binned", "day_binned", "wind_direction_binned", "wind_speed_binned", "sea_level_pressure_binned"]
 
 for column in df.columns:
     if column in excluded_columns:
@@ -911,6 +1083,7 @@ else:
 
     # Display progress bars
     st.markdown("<h1 class='custom-title'>Building Energy Demand Dashboard</h1>", unsafe_allow_html=True)
+    st.markdown("<div class='rainbow' style='margin-bottom: 2rem;'></div>", unsafe_allow_html=True)
 
     col1, col2 = st.columns([1, 3])
 
@@ -918,15 +1091,15 @@ else:
         st.plotly_chart(create_donut_chart(high_consumption_percentage, low_consumption_percentage))
 
     with col2:
-        col21, col22 = st.columns(2)
+        col21, col22, col23, col24 = st.columns(4)
         with col21:
             st.plotly_chart(create_indicator_chart(filtered_df['square_feet'].mean(), "Mean Square Feet"))
         with col22:
             st.plotly_chart(create_indicator_chart(filtered_df['meter_reading'].mean(), "Mean Meter Reading"))
-        # with col23:
-        #     st.plotly_chart(create_indicator_chart(filtered_df['air_temperature'].mean(), "Mean Air Temperature"))
-        # with col24:
-        #     st.plotly_chart(create_indicator_chart(filtered_df['wind_speed'].mean(), "Mean Wind Speed"))
+        with col23:
+            st.plotly_chart(create_indicator_chart(filtered_df['air_temperature'].mean(), "Mean Air Temperature"))
+        with col24:
+            st.plotly_chart(create_indicator_chart(filtered_df['wind_speed'].mean(), "Mean Wind Speed"))
 
     # Create and display the stories
     story_one = create_story_one(filtered_df)
@@ -1003,6 +1176,7 @@ else:
 
 # File Upload for Data Visualization
 st.markdown("<h2 class='custom-title'>Upload Data for Visualization</h2>", unsafe_allow_html=True)
+st.markdown("<div class='rainbow' style='margin-bottom: 2rem;'></div>", unsafe_allow_html=True)
 uploaded_file = st.file_uploader("Choose a CSV file", type=["csv"])
 if uploaded_file is not None:
     try:
