@@ -83,7 +83,8 @@ with col2:
         st.toast("Predicting...")
 
         # Load the Transformer model
-        transformer_model = tf.keras.models.load_model('D:/Downloads/final-year-project/notebooks/models/Transformer_ADAM')
+        transformer_path = (base_path / "../models/Transformer_ADAM").resolve()
+        transformer_model = tf.keras.models.load_model(transformer_path)
 
         # Load the scaler
         scaler_path = (base_path / "../scaler.joblib").resolve()
