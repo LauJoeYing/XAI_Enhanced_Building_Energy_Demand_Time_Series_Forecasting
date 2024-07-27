@@ -56,7 +56,7 @@ def update_conversation_history(quest):
     st.session_state.messages.append({"role": "assistant", "content": result})
 
     # Rerun to update the conversation history
-    st.experimental_rerun()
+    st.rerun()
 
 # Handle button click
 if st.button(quest1):
