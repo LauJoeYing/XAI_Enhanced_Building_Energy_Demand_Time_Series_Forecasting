@@ -1,0 +1,4 @@
+tensorflow
+google.generativeai
+streamlit_vizzu
+
