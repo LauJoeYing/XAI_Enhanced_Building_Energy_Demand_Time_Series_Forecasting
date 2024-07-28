@@ -54,7 +54,7 @@ st.markdown(
 st.markdown("<div class='rainbow'></div>", unsafe_allow_html=True)
 
 # Add subheading mentioning supervisor and second marker
-st.markdown("<h2 class='subheading'>Supervised by Dr. Preethi Subramanian | Second Marker: Assoc. Prof. Dr. Imran Medi</h2>", unsafe_allow_html=True)
+st.markdown("<h2 class='subheading'>Project By: Lau Joe Ying | Supervised By: Dr. Preethi Subramanian | Second Marker: Assoc. Prof. Dr. Imran Medi</h2>", unsafe_allow_html=True)
 
 # Create two columns
 col1, col2 = st.columns(2, gap="medium")
