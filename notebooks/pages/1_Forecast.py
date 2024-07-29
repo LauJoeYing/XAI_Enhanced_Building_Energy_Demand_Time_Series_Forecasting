@@ -180,6 +180,7 @@ with col2:
 
         # # Remove features with mean SHAP value of 0
         shap_values_df = shap_values_df[shap_values_df['Mean Absolute SHAP Value'] != 0]
+        shap_values_df = shap_values_df.drop(columns=['wind_direction'])
         st.session_state.shap_values_df = shap_values_df
         st.write(shap_values_df)
 
