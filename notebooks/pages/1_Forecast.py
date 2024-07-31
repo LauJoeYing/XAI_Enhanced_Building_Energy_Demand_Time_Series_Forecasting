@@ -131,27 +131,23 @@ with col2:
 
         # Apply transformation pipeline to input data
         input_data_transformed = full_pipeline.fit_transform(input_data)
-       
+        st.write(f"Transformed Data: {input_data_transformed}") # Ensure to fit_transform on input data
+
         # Repeat input_data to match time steps expected by the model
         input_data_transformed = np.repeat(input_data_transformed, time_steps, axis=0).reshape((1, time_steps, -1))
 
         # Generate prediction
         prediction_scaled = transformer_model.predict(input_data_transformed).flatten()[0]
+        st.write(f"Scaled Prediction: {prediction_scaled}")
 
         min_meter_reading = scaler.data_min_[0]
         max_meter_reading = scaler.data_max_[0]
+        st.write(f"Min Value: {min_meter_reading}")
+        st.write(f"Max Value: {max_meter_reading}")
 
         # Convert the prediction back to the original scale
         prediction_original = prediction_scaled * (max_meter_reading - min_meter_reading) + min_meter_reading
-
-        # Create a DataFrame to display the results in a table
-        prediction = {
-            'Metric': ['Transformed Data', 'Scaled Prediction', 'Min Value', 'Max Value', 'Actual Prediction'],
-            'Value': [input_data_transformed.flatten(), prediction_scaled, min_meter_reading, max_meter_reading, prediction_original]
-        }
-
-        prediction_df = pd.DataFrame(prediction)
-        st.table(prediction_df)
+        st.write(f"Actual Prediction: {prediction_original}")
 
 
         data = {
@@ -222,5 +218,3 @@ with col2:
 
         # Display the plot
         st.plotly_chart(fig, use_container_width=True)
-
-        
