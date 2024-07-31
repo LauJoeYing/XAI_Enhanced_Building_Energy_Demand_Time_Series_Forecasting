@@ -35,6 +35,10 @@ suppliers = {
         "rates": [0.218, 0.334, 0.516, 0.546, 0.571],
         "thresholds": [200, 100, 300, 300, float('inf')]
     },
+    "TNB (Industrial)": {
+        "rates": [0.365, 0.385, 0.395],
+        "thresholds": [200, 200, float('inf')]
+    },
     "Sarawak Energy": {
         "rates": [0.33, 0.54],
         "thresholds": [150, float('inf')]
@@ -74,18 +78,6 @@ st.info(
     """
     This calculator is only a guide and based on normal billing cycle.
     This bill calculation is meant to calculate energy consumption only, and does not include other charges such as 1% late payment, Power Factor surcharge, Connected Load Charge (CLC) penalty etc.
-    This calculation does not take into account rebates, discounts, or special tariff incentives such as Off Peak Tariff Ride (OPTR), Sunday Tariff Rider (STR) etc.
+    This calculation does not take into account rebates, discounts, or special tariff incentives such as Off Peak Tariff Ride (OPTR), Sunday Tariff Rider (STR) etc*
     """
 )
-
-# # Add notes reminder
-# st.markdown("""
-# <div style="margin-top: 1.5rem;">
-#     <h3>Notes:</h3>
-#     <ul>
-#         <li>This calculator is only a guide and based on normal billing cycle.</li>
-#         <li>This bill calculation is meant to calculate energy consumption only, and does not include other charges such as 1% late payment, 1.6% Kumpulan Wang Tenaga Boleh Baharu (RE Fund), Power Factor surcharge, Connected Load Charge (CLC) penalty etc.</li>
-#         <li>This calculation does not take into account rebates, discounts, or special tariff incentives such as Off Peak Tariff Ride (OPTR), Sunday Tariff Rider (STR) etc.</li>
-#     </ul>
-# </div>
-# """, unsafe_allow_html=True)
