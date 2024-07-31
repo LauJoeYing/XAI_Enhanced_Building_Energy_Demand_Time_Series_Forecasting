@@ -52,35 +52,47 @@ suppliers = {
     }
 }
 
-# Function to calculate cost
+# Function to calculate cost with detailed steps
 def calculate_cost(kWh, rates, thresholds):
     cost = 0
     remaining_kWh = kWh
+    steps = []
     for rate, threshold in zip(rates, thresholds):
         if remaining_kWh > threshold:
-            cost += threshold * rate
+            step_cost = threshold * rate
+            cost += step_cost
+            steps.append(f"{threshold} kWh * {rate} MYR = {step_cost} MYR")
             remaining_kWh -= threshold
         else:
-            cost += remaining_kWh * rate
+            step_cost = remaining_kWh * rate
+            cost += step_cost
+            steps.append(f"{remaining_kWh} kWh * {rate} MYR = {step_cost} MYR")
             break
-    return cost
+    return cost, steps
 
 # Cache the calculation
 @st.cache_data
 def get_costs(kWh_usage):
     results = []
     for supplier, data in suppliers.items():
-        cost = calculate_cost(kWh_usage, data["rates"], data["thresholds"])
-        results.append({"Supplier": supplier, "Cost (MYR)": cost})
+        cost, steps = calculate_cost(kWh_usage, data["rates"], data["thresholds"])
+        results.append({"Supplier": supplier, "Cost (MYR)": cost, "Steps": steps})
     return pd.DataFrame(results)
 
 # Calculate and display the cost for each supplier
 if st.button("Calculate"):
     st.session_state.kWh_usage = kWh_usage  # Save the input value in session state
     results_df = get_costs(kWh_usage)
+    
     st.markdown("<div class='fixed-table'>", unsafe_allow_html=True)
-    st.write(results_df)
+    st.write(f"Energy Consumption: {st.session_state.kWh_usage} kWh")
+    st.write(results_df[["Supplier", "Cost (MYR)"]])
     st.markdown("</div>", unsafe_allow_html=True)
+
+    for index, row in results_df.iterrows():
+        st.write(f"**{row['Supplier']}**")
+        for step in row["Steps"]:
+            st.write(step)
 
     st.info(
         """
