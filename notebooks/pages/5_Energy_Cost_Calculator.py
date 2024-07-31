@@ -27,10 +27,10 @@ st.markdown("<p class='custom-chatbot-title'>Energy Cost Calculator</p>", unsafe
 st.markdown("<div class='rainbow' style='margin-bottom: 2rem;'></div>", unsafe_allow_html=True)
 
 # User inputs for kWh usage
-@st.cache_data
-def get_usage(self):
-    kWh_usage = st.number_input("Enter your energy consumption in kWh:", min_value=0.0, format="%.2f")
-    return kWh_usage
+if 'kWh_usage' not in st.session_state:
+    st.session_state.kWh_usage = 0.0
+
+kWh_usage = st.number_input("Enter your energy consumption in kWh:", min_value=0.0, format="%.2f", value=st.session_state.kWh_usage)
 
 # Energy suppliers and their rates
 suppliers = {
@@ -76,6 +76,7 @@ def get_costs(kWh_usage):
 
 # Calculate and display the cost for each supplier
 if st.button("Calculate"):
+    st.session_state.kWh_usage = kWh_usage  # Save the input value in session state
     results_df = get_costs(kWh_usage)
     st.markdown("<div class='fixed-table'>", unsafe_allow_html=True)
     st.write(results_df)
