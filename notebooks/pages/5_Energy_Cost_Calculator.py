@@ -11,10 +11,8 @@ stylesheet_file_path = (base_path / "../stylesheets/style.css").resolve()
 with open(stylesheet_file_path) as f:
     st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
-# Add subheading mentioning supervisor and second marker
-st.markdown("<h2 style='text-align: center;'>Supervised by Dr. Preethi Subramanian</h2>", unsafe_allow_html=True)
-st.markdown("<h2 style='text-align: center;'>Second Marker: Assoc. Prof. Dr. Imran Medi</h2>", unsafe_allow_html=True)
-
+# Streamlit app layout
+st.markdown("<p class='custom-chatbot-title'>Energy Cost Calculator</p>", unsafe_allow_html=True)
 st.markdown("<div class='rainbow' style='margin-bottom: 2rem;'></div>", unsafe_allow_html=True)
 
 st.title("Energy Cost Calculator")
@@ -61,3 +59,14 @@ if st.button("Calculate"):
     results_df = pd.DataFrame(results)
     st.write(results_df)
 
+# Add notes reminder
+st.markdown("""
+<div style="margin-top: 2rem;">
+    <h4>Notes:</h4>
+    <ul>
+        <li>This calculator is only a guide and based on normal billing cycle.</li>
+        <li>This bill calculation is meant to calculate energy consumption only, and does not include other charges such as 1% late payment, 1.6% Kumpulan Wang Tenaga Boleh Baharu (RE Fund), Power Factor surcharge, Connected Load Charge (CLC) penalty etc.</li>
+        <li>This calculation does not take into account rebates, discounts, or special tariff incentives such as Off Peak Tariff Ride (OPTR), Sunday Tariff Rider (STR) etc.</li>
+    </ul>
+</div>
+""", unsafe_allow_html=True)
