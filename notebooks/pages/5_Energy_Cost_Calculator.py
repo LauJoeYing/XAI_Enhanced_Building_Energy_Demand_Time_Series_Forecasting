@@ -1,16 +1,21 @@
 import streamlit as st
 import pandas as pd
+from pathlib import Path
 
 # Set Streamlit layout to wide
 st.set_page_config(layout="wide")
 
 # Load custom CSS
-with open('path/to/your/style.css') as f:  # Update with the actual path to your CSS file
+base_path = Path(__file__).parent
+stylesheet_file_path = (base_path / "stylesheets/style.css").resolve()
+with open(stylesheet_file_path) as f:
     st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
 # Add subheading mentioning supervisor and second marker
 st.markdown("<h2 style='text-align: center;'>Supervised by Dr. Preethi Subramanian</h2>", unsafe_allow_html=True)
 st.markdown("<h2 style='text-align: center;'>Second Marker: Assoc. Prof. Dr. Imran Medi</h2>", unsafe_allow_html=True)
+
+st.markdown("<div class='rainbow' style='margin-bottom: 2rem;'></div>", unsafe_allow_html=True)
 
 st.title("Energy Cost Calculator")
 
