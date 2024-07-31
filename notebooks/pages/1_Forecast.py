@@ -142,11 +142,11 @@ with col2:
 
         min_meter_reading = scaler.data_min_[0]
         max_meter_reading = scaler.data_max_[0]
-        st.write(f"Min and Max Value: {min_meter_reading}, {max_meter_reading}")
+        st.write(f"Min and Max Value: {min_meter_reading} kWh, {max_meter_reading} kWh")
 
         # Convert the prediction back to the original scale
         prediction_original = prediction_scaled * (max_meter_reading - min_meter_reading) + min_meter_reading
-        st.write(f"Actual Prediction: {prediction_original}")
+        st.write(f"Actual Prediction: {prediction_original} kWh")
 
 
         data = {
@@ -170,7 +170,7 @@ with col2:
         if isinstance(shap_values, list):
             shap_values = shap_values[0]
 
-        # # Reshape SHAP values to original time-series format
+               # # Reshape SHAP values to original time-series format
         shap_values_reshaped = np.array(shap_values).reshape(1, time_steps, expected_feature_count)
 
         # # Mean of Absolute Values across time steps
@@ -198,9 +198,9 @@ with col2:
         if 'wind_direction' in shap_values_df.index:
             shap_values_df = shap_values_df.drop('wind_direction')
         st.session_state.shap_values_df = shap_values_df
-        st.table(shap_values_df)
+        st.write(shap_values_df)
 
-        # Plot SHAP summary with Plotly
+        # # Plot SHAP summary with Plotly
         fig = px.bar(
             st.session_state.shap_values_df,
             x=st.session_state.shap_values_df.index,
@@ -211,9 +211,8 @@ with col2:
             color_continuous_scale='Turbo'
         )
 
-        # Update layout to show mean SHAP values on each bar
+        # # Update layout to show mean SHAP values on each bar
         fig.update_traces(texttemplate='%{text:.4f}', textposition='outside')
         fig.update_layout(uniformtext_minsize=8, uniformtext_mode='hide')
 
-        # Display the plot
         st.plotly_chart(fig, use_container_width=True)
