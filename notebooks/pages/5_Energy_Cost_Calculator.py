@@ -25,7 +25,7 @@ st.markdown("""
     .custom-table {
         background-color: white;
         border-collapse: collapse;
-        margin: 25px 0;
+        margin: 5px 0;  /* Adjusted margin to reduce spacing */
         font-size: 0.8em;
         font-family: 'Playwrite DE Grund', cursive;
         min-width: 500px;
@@ -60,6 +60,15 @@ st.markdown("""
 # Streamlit app layout
 st.markdown("<p class='custom-chatbot-title'>Energy Cost Calculator</p>", unsafe_allow_html=True)
 st.markdown("<div class='rainbow' style='margin-bottom: 2rem;'></div>", unsafe_allow_html=True)
+
+st.info(
+        """
+        This calculator is only a guide and based on normal billing cycle.
+        This bill calculation is meant to calculate energy consumption only, and does not include other charges such as 1% late payment, Power Factor surcharge, Connected Load Charge (CLC) penalty etc.
+        This calculation does not take into account rebates, discounts, or special tariff incentives such as Off Peak Tariff Ride (OPTR), Sunday Tariff Rider (STR) etc*
+        """
+    )
+
 
 # User inputs for kWh usage
 if 'kWh_usage' not in st.session_state:
@@ -131,10 +140,4 @@ if st.button("Calculate"):
         st.markdown(calculation_df.to_html(index=False, classes="custom-table"), unsafe_allow_html=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
-    st.info(
-        """
-        This calculator is only a guide and based on normal billing cycle.
-        This bill calculation is meant to calculate energy consumption only, and does not include other charges such as 1% late payment, Power Factor surcharge, Connected Load Charge (CLC) penalty etc.
-        This calculation does not take into account rebates, discounts, or special tariff incentives such as Off Peak Tariff Ride (OPTR), Sunday Tariff Rider (STR) etc*
-        """
-    )
+    
