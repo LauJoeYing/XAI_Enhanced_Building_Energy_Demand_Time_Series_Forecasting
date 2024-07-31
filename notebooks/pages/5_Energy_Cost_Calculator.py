@@ -27,7 +27,10 @@ st.markdown("<p class='custom-chatbot-title'>Energy Cost Calculator</p>", unsafe
 st.markdown("<div class='rainbow' style='margin-bottom: 2rem;'></div>", unsafe_allow_html=True)
 
 # User inputs for kWh usage
-kWh_usage = st.number_input("Enter your energy consumption in kWh:", min_value=0.0, format="%.2f")
+@st.cache_data
+def get_usage(self):
+    kWh_usage = st.number_input("Enter your energy consumption in kWh:", min_value=0.0, format="%.2f")
+    return kWh_usage
 
 # Energy suppliers and their rates
 suppliers = {
