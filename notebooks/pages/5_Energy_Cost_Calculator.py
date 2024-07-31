@@ -70,11 +70,13 @@ if st.button("Calculate"):
     st.write(results_df)
     st.markdown("</div>", unsafe_allow_html=True)
 
-st.info("""
-This calculator is only a guide and based on normal billing cycle.
-This bill calculation is meant to calculate energy consumption only, and does not include other charges such as 1% late payment, 1.6% Kumpulan Wang Tenaga Boleh Baharu (RE Fund), Power Factor surcharge, Connected Load Charge (CLC) penalty etc.
-This calculation does not take into account rebates, discounts, or special tariff incentives such as Off Peak Tariff Ride (OPTR), Sunday Tariff Rider (STR) etc.
-""")
+st.info(
+    """
+    This calculator is only a guide and based on normal billing cycle.
+    This bill calculation is meant to calculate energy consumption only, and does not include other charges such as 1% late payment, Power Factor surcharge, Connected Load Charge (CLC) penalty etc.
+    This calculation does not take into account rebates, discounts, or special tariff incentives such as Off Peak Tariff Ride (OPTR), Sunday Tariff Rider (STR) etc.
+    """
+)
 
 # # Add notes reminder
 # st.markdown("""
