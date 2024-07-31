@@ -11,11 +11,20 @@ stylesheet_file_path = (base_path / "../stylesheets/style.css").resolve()
 with open(stylesheet_file_path) as f:
     st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
+# Add custom CSS for fixed table width
+st.markdown("""
+<style>
+    .fixed-table {
+        width: 50%;  /* Adjust the width as needed */
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+""", unsafe_allow_html=True)
+
 # Streamlit app layout
 st.markdown("<p class='custom-chatbot-title'>Energy Cost Calculator</p>", unsafe_allow_html=True)
 st.markdown("<div class='rainbow' style='margin-bottom: 2rem;'></div>", unsafe_allow_html=True)
-
-st.title("Energy Cost Calculator")
 
 # User inputs for kWh usage
 kWh_usage = st.number_input("Enter your energy consumption in kWh:", min_value=0.0, format="%.2f")
@@ -57,12 +66,14 @@ if st.button("Calculate"):
         results.append({"Supplier": supplier, "Cost (MYR)": cost})
     
     results_df = pd.DataFrame(results)
+    st.markdown("<div class='fixed-table'>", unsafe_allow_html=True)
     st.write(results_df)
+    st.markdown("</div>", unsafe_allow_html=True)
 
 # Add notes reminder
 st.markdown("""
-<div style="margin-top: 2rem;">
-    <h4>Notes:</h4>
+<div style="margin-top: 1.5rem;">
+    <h3>Notes:</h3>
     <ul>
         <li>This calculator is only a guide and based on normal billing cycle.</li>
         <li>This bill calculation is meant to calculate energy consumption only, and does not include other charges such as 1% late payment, 1.6% Kumpulan Wang Tenaga Boleh Baharu (RE Fund), Power Factor surcharge, Connected Load Charge (CLC) penalty etc.</li>
