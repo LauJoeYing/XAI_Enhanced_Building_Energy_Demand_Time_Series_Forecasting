@@ -7,7 +7,7 @@ st.set_page_config(layout="wide")
 
 # Load custom CSS
 base_path = Path(__file__).parent
-stylesheet_file_path = (base_path / "stylesheets/style.css").resolve()
+stylesheet_file_path = (base_path / "../stylesheets/style.css").resolve()
 with open(stylesheet_file_path) as f:
     st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
