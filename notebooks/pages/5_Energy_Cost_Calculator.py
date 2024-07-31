@@ -11,7 +11,7 @@ stylesheet_file_path = (base_path / "../stylesheets/style.css").resolve()
 with open(stylesheet_file_path) as f:
     st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
-# Add custom CSS for fixed table width
+# Add custom CSS for fixed table width and custom table styling
 st.markdown("""
 <style>
     .fixed-table {
@@ -26,14 +26,14 @@ st.markdown("""
         background-color: white;
         border-collapse: collapse;
         margin: 25px 0;
-        font-size: 0.9em;
+        font-size: 0.8em;
         font-family: 'Playwrite DE Grund', cursive;
         min-width: 400px;
         box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
     }
     .custom-table th,
     .custom-table td {
-        padding: 12px 15px;
+        padding: 8px 10px;
     }
     .custom-table thead tr {
         background-color: #009879;
@@ -59,6 +59,14 @@ st.markdown("""
 # Streamlit app layout
 st.markdown("<p class='custom-chatbot-title'>Energy Cost Calculator</p>", unsafe_allow_html=True)
 st.markdown("<div class='rainbow' style='margin-bottom: 2rem;'></div>", unsafe_allow_html=True)
+
+st.info(
+        """
+        This calculator is only a guide and based on normal billing cycle.
+        This bill calculation is meant to calculate energy consumption only, and does not include other charges such as 1% late payment, Power Factor surcharge, Connected Load Charge (CLC) penalty etc.
+        This calculation does not take into account rebates, discounts, or special tariff incentives such as Off Peak Tariff Ride (OPTR), Sunday Tariff Rider (STR) etc*
+        """
+    )
 
 # User inputs for kWh usage
 if 'kWh_usage' not in st.session_state:
@@ -130,10 +138,4 @@ if st.button("Calculate"):
         st.markdown(calculation_df.to_html(index=False, classes="custom-table"), unsafe_allow_html=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
-    st.info(
-        """
-        This calculator is only a guide and based on normal billing cycle.
-        This bill calculation is meant to calculate energy consumption only, and does not include other charges such as 1% late payment, Power Factor surcharge, Connected Load Charge (CLC) penalty etc.
-        This calculation does not take into account rebates, discounts, or special tariff incentives such as Off Peak Tariff Ride (OPTR), Sunday Tariff Rider (STR) etc*
-        """
-    )
+    
