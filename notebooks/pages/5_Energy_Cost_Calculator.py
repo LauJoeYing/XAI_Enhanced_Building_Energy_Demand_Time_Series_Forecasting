@@ -61,12 +61,12 @@ def calculate_cost(kWh, rates, thresholds):
         if remaining_kWh > threshold:
             step_cost = threshold * rate
             cost += step_cost
-            steps.append(f"{threshold} kWh * {rate} MYR = {step_cost} MYR")
+            steps.append(f"{threshold:.1f} kWh * {rate:.3f} MYR = {step_cost:.2f} MYR")
             remaining_kWh -= threshold
         else:
             step_cost = remaining_kWh * rate
             cost += step_cost
-            steps.append(f"{remaining_kWh} kWh * {rate} MYR = {step_cost} MYR")
+            steps.append(f"{remaining_kWh:.1f} kWh * {rate:.3f} MYR = {step_cost:.2f} MYR")
             break
     return cost, steps
 
@@ -86,13 +86,13 @@ if st.button("Calculate"):
     
     st.markdown("<div class='fixed-table'>", unsafe_allow_html=True)
     st.write(f"Energy Consumption: {st.session_state.kWh_usage} kWh")
-    st.write(results_df[["Supplier", "Cost (MYR)"]])
+    st.table(results_df[["Supplier", "Cost (MYR)"]].style.format({"Cost (MYR)": "{:.2f}"}))
     st.markdown("</div>", unsafe_allow_html=True)
 
     for index, row in results_df.iterrows():
         st.write(f"**{row['Supplier']}**")
-        for step in row["Steps"]:
-            st.write(step)
+        calculation_df = pd.DataFrame({"Calculation Steps": row["Steps"]})
+        st.table(calculation_df)
 
     st.info(
         """
