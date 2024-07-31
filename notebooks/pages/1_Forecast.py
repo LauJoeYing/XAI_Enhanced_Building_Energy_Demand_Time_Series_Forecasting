@@ -142,8 +142,7 @@ with col2:
 
         min_meter_reading = scaler.data_min_[0]
         max_meter_reading = scaler.data_max_[0]
-        st.write(f"Min Value: {min_meter_reading}")
-        st.write(f"Max Value: {max_meter_reading}")
+        st.write(f"Min and Max Value: {min_meter_reading}, {max_meter_reading}")
 
         # Convert the prediction back to the original scale
         prediction_original = prediction_scaled * (max_meter_reading - min_meter_reading) + min_meter_reading
