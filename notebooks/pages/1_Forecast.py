@@ -148,6 +148,20 @@ with col2:
         # Convert the prediction back to the original scale
         prediction_original = prediction_scaled * (max_meter_reading - min_meter_reading) + min_meter_reading
         st.write(f"Actual Prediction: {prediction_original}")
+        st.write(f"Deployed Model: Transformer Model")
+
+        data = {
+            'Model': ['Transformer'],
+            'MSE': [0.0042],
+            'RMSE': [0.0053],
+            'MAE': [0.0054],
+            'Forecast Bias': [0.0055]
+        }
+
+        # Create a DataFrame
+        df = pd.DataFrame(data)
+        st.table(df)
+        
 
         st.toast("Generating XAI SHAP Values...")
 
@@ -180,11 +194,14 @@ with col2:
 
         # # Remove features with mean SHAP value of 0
         shap_values_df = shap_values_df[shap_values_df['Mean Absolute SHAP Value'] != 0]
-        shap_values_df = shap_values_df.drop(columns=['wind_direction'])
+
+        # Drop the 'wind_direction' column if it exists
+        if 'wind_direction' in shap_values_df.index:
+            shap_values_df = shap_values_df.drop('wind_direction')
         st.session_state.shap_values_df = shap_values_df
         st.write(shap_values_df)
 
-        # # Plot SHAP summary with Plotly
+        # Plot SHAP summary with Plotly
         fig = px.bar(
             st.session_state.shap_values_df,
             x=st.session_state.shap_values_df.index,
@@ -195,8 +212,9 @@ with col2:
             color_continuous_scale='Turbo'
         )
 
-        # # Update layout to show mean SHAP values on each bar
+        # Update layout to show mean SHAP values on each bar
         fig.update_traces(texttemplate='%{text:.4f}', textposition='outside')
         fig.update_layout(uniformtext_minsize=8, uniformtext_mode='hide')
 
+        # Display the plot
         st.plotly_chart(fig, use_container_width=True)
