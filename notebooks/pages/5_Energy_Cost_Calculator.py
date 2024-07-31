@@ -26,10 +26,9 @@ st.markdown("""
         background-color: white;
         border-collapse: collapse;
         margin: 25px 0;
-        font-size: 0.8em;
+        font-size: 0.5em;
         font-family: 'Playwrite DE Grund', cursive;
-        min-width: 400px;
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+        min-width: 300px;
     }
     .custom-table th,
     .custom-table td {
