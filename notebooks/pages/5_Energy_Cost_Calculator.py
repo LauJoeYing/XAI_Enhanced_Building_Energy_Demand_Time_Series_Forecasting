@@ -28,8 +28,8 @@ st.markdown("""
         margin: 5px 0;  /* Adjusted margin to reduce spacing */
         font-size: 0.8em;
         font-family: 'Playwrite DE Grund', cursive;
-        min-width: 900px;
-        max-width: 900px;
+        min-width: 800px;
+        max-width: 800px;
     }
     .custom-table th,
     .custom-table td {
