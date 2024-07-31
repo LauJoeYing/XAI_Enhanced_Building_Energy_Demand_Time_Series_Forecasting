@@ -19,7 +19,7 @@ def pdf_page_to_image(pdf_document, page_number, zoom=2):
     return image
 
 #Title of the app
-st.markdown("<p class='custom-chatbot-title'>High Building Energy Consumption Factors</p>", unsafe_allow_html=True)
+st.markdown("<p class='custom-chatbot-title'>High Energy Consumption Factors</p>", unsafe_allow_html=True)
 
 # Move the rainbow to the left
 st.markdown(
