@@ -19,6 +19,40 @@ st.markdown("""
         margin-left: auto;
         margin-right: auto;
     }
+    .custom-dataframe {
+        background-color: white;
+    }
+    .custom-table {
+        background-color: white;
+        border-collapse: collapse;
+        margin: 25px 0;
+        font-size: 0.9em;
+        font-family: 'Playwrite DE Grund', cursive;
+        min-width: 400px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    }
+    .custom-table th,
+    .custom-table td {
+        padding: 12px 15px;
+    }
+    .custom-table thead tr {
+        background-color: #009879;
+        color: #ffffff;
+        text-align: left;
+    }
+    .custom-table tbody tr {
+        border-bottom: 1px solid #dddddd;
+    }
+    .custom-table tbody tr:nth-of-type(even) {
+        background-color: #f3f3f3;
+    }
+    .custom-table tbody tr:last-of-type {
+        border-bottom: 2px solid #009879;
+    }
+    .custom-table tbody tr.active-row {
+        font-weight: bold;
+        color: #009879;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -86,13 +120,15 @@ if st.button("Calculate"):
     
     st.markdown("<div class='fixed-table'>", unsafe_allow_html=True)
     st.write(f"Energy Consumption: {st.session_state.kWh_usage} kWh")
-    st.table(results_df[["Supplier", "Cost (MYR)"]].style.format({"Cost (MYR)": "{:.2f}"}))
+    st.dataframe(results_df[["Supplier", "Cost (MYR)"]].style.format({"Cost (MYR)": "{:.2f}"}).set_table_attributes('class="custom-dataframe"'))
     st.markdown("</div>", unsafe_allow_html=True)
 
     for index, row in results_df.iterrows():
         st.write(f"**{row['Supplier']}**")
         calculation_df = pd.DataFrame({"Calculation Steps": row["Steps"]})
-        st.markdown(calculation_df)
+        st.markdown("<div class='fixed-table'>", unsafe_allow_html=True)
+        st.markdown(calculation_df.to_html(index=False, classes="custom-table"), unsafe_allow_html=True)
+        st.markdown("</div>", unsafe_allow_html=True)
 
     st.info(
         """
