@@ -152,9 +152,9 @@ with col2:
         data = {
             'Model': ['Transformer'],
             'MSE': [0.0042],
-            'RMSE': [0.0053],
-            'MAE': [0.0054],
-            'Forecast Bias': [0.0055]
+            'RMSE': [0.0651],
+            'MAE': [0.0484],
+            'Forecast Bias': [0.0185]
         }
 
         # Create a DataFrame
