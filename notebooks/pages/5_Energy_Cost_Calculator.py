@@ -62,22 +62,26 @@ def calculate_cost(kWh, rates, thresholds):
             break
     return cost
 
-# Calculate and display the cost for each supplier
-if st.button("Calculate"):
+# Cache the calculation
+@st.cache_data
+def get_costs(kWh_usage):
     results = []
     for supplier, data in suppliers.items():
         cost = calculate_cost(kWh_usage, data["rates"], data["thresholds"])
         results.append({"Supplier": supplier, "Cost (MYR)": cost})
-    
-    results_df = pd.DataFrame(results)
+    return pd.DataFrame(results)
+
+# Calculate and display the cost for each supplier
+if st.button("Calculate"):
+    results_df = get_costs(kWh_usage)
     st.markdown("<div class='fixed-table'>", unsafe_allow_html=True)
     st.write(results_df)
     st.markdown("</div>", unsafe_allow_html=True)
 
-st.info(
-    """
-    This calculator is only a guide and based on normal billing cycle.
-    This bill calculation is meant to calculate energy consumption only, and does not include other charges such as 1% late payment, Power Factor surcharge, Connected Load Charge (CLC) penalty etc.
-    This calculation does not take into account rebates, discounts, or special tariff incentives such as Off Peak Tariff Ride (OPTR), Sunday Tariff Rider (STR) etc*
-    """
-)
+    st.info(
+        """
+        This calculator is only a guide and based on normal billing cycle.
+        This bill calculation is meant to calculate energy consumption only, and does not include other charges such as 1% late payment, Power Factor surcharge, Connected Load Charge (CLC) penalty etc.
+        This calculation does not take into account rebates, discounts, or special tariff incentives such as Off Peak Tariff Ride (OPTR), Sunday Tariff Rider (STR) etc*
+        """
+    )
