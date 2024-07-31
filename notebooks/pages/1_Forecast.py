@@ -150,7 +150,8 @@ with col2:
             'Value': [input_data_transformed.flatten(), prediction_scaled, min_meter_reading, max_meter_reading, prediction_original]
         }
 
-        df = pd.DataFrame(prediction)
+        prediction_df = pd.DataFrame(prediction)
+        st.table(prediction_df)
 
 
         data = {
