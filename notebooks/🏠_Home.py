@@ -12,7 +12,7 @@ with st.sidebar:
     st.write("""<a href="mailto:joeying0712@gmail.com" class="custom-nav-item">📧 Email</a>""", unsafe_allow_html=True)
     st.write("""<a href="https://www.linkedin.com/in/laujoeying/" class="custom-nav-item">💼 LinkedIn Profile</a>""", unsafe_allow_html=True)
 
-st.markdown("<h1 class='custom-title'>Welcome to Joe Ying's FYP</h1>", unsafe_allow_html=True)
+st.markdown("<h1 class='custom-title'>Welcome to Insite</h1>", unsafe_allow_html=True)
 
 # 1st step: upload the gif to gdrive
 # 2nd step: share the file to public with "Anyone with the link" general access
