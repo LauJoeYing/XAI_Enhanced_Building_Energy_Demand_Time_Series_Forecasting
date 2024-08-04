@@ -115,14 +115,17 @@ text {
     white-space: nowrap; /* Prevents text wrapping */
     overflow: hidden; /* Hides overflow content */
     border-right: 2px solid beige; /* Creates cursor effect */
-    animation: typing 5s steps(40, end) infinite, blink .75s step-end infinite alternate;
+    animation: typing 5s steps(40, end) infinite, blink 0.75s step-end infinite alternate;
 }
 
 @keyframes typing {
     0% {
         width: 0;
     }
-    50% {
+    70% {
+        width: 100%;
+    }
+    90% {
         width: 100%;
     }
     100% {
