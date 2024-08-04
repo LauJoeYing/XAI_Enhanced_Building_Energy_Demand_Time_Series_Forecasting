@@ -112,20 +112,30 @@ text {
     text-align: center;
     margin: 0 auto 1.25rem;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    opacity: 0; /* Initially hidden */
-    animation: fadeIn 2s ease-in-out forwards; /* Animation applied */
+    white-space: nowrap; /* Prevents text wrapping */
+    overflow: hidden; /* Hides overflow content */
+    border-right: 2px solid beige; /* Creates cursor effect */
+    animation: typing 5s steps(40, end), blink .75s step-end infinite alternate;
 }
 
-@keyframes fadeIn {
+@keyframes typing {
     from {
-        opacity: 0;
-        transform: translateY(-20px); /* Start slightly above */
+        width: 0;
     }
     to {
-        opacity: 1;
-        transform: translateY(0); /* End at original position */
+        width: 100%;
     }
 }
+
+@keyframes blink {
+    from {
+        border-color: transparent;
+    }
+    to {
+        border-color: beige;
+    }
+}
+
 
 .custom-title {
     max-width: 95%;
