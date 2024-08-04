@@ -11,6 +11,11 @@ stylesheet_file_path = (base_path / "../stylesheets/style.css").resolve()
 with open(stylesheet_file_path) as f:
     st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
+with st.sidebar:
+    st.write("""<p class="custom-nav-item">Contact Me</ap>""", unsafe_allow_html=True)
+    st.write("""<a href="mailto:joeying0712@gmail.com" class="custom-nav-item">📧 Email</a>""", unsafe_allow_html=True)
+    st.write("""<a href="https://www.linkedin.com/in/laujoeying/" class="custom-nav-item">💼 LinkedIn Profile</a>""", unsafe_allow_html=True)
+
 # Add custom CSS for fixed table width and custom table styling
 st.markdown("""
 <style>

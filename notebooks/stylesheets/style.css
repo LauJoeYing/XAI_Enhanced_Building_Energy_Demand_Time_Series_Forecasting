@@ -15,11 +15,26 @@ text {
     background-color: #FFBBBB;
 }
 
+[data-testid="stSidebarNav"] {
+    border-top: 1px solid rgba(49, 51, 63, 0.2);
+    padding-top: 17px;
+}
+
 [data-testid="stSidebarNavItems"] span {
     font-family: "Crimson Text", serif;
     font-weight: 700 !important;
     font-style: normal;
     font-size: 1em;
+}
+
+.custom-nav-item, [data-testid="stMarkdownContainer"] p.custom-nav-item {
+    font-family: "Crimson Text", serif !important;
+    font-weight: 700 !important;
+    font-style: normal !important;
+    font-size: 1.2em !important;
+    text-decoration: none !important;
+    color: dimgray !important;
+    padding-left: 10px;
 }
 
 [data-testid="stSidebarNavViewButton"] {
