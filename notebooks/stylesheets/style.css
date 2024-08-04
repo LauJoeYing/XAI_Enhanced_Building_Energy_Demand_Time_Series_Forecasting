@@ -11,6 +11,21 @@ text {
     text-shadow: none !important;
 }
 
+[data-testid="stSidebar"] {
+    background-color: #FFBBBB;
+}
+
+[data-testid="stSidebarNavItems"] span {
+    font-family: "Crimson Text", serif;
+    font-weight: 700 !important;
+    font-style: normal;
+    font-size: 1em;
+}
+
+[data-testid="stSidebarNavViewButton"] {
+    display: none;
+}
+
 .title {
     z-index: 1;
     max-width: 70%;
@@ -80,18 +95,6 @@ text {
     text-align: center;
     margin: 0 auto 1.25rem;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-}
-
-.e1nzilvr4 > .custom-chatbot-title {
-    max-width: 95%;
-    padding: 0;
-    font-size: 43px !important; 
-    color: beige;
-    text-align: center;
-    margin: 0 auto 1.25rem;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    font-weight: bold; /* Make the text bold */
-    white-space: nowrap; /* Ensure the title is aligned in one line */
 }
 
 .e1nzilvr4 > .user-msg {
