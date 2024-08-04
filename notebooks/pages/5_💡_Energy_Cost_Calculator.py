@@ -82,19 +82,19 @@ kWh_usage = st.number_input("Enter your energy consumption in kWh:", min_value=0
 
 # Energy suppliers and their rates
 suppliers = {
-    "TNB (Residential)": {
+    "Tenaga Nasional Berhad (TNB-Residential)": {
         "rates": [0.218, 0.334, 0.516, 0.546, 0.571],
         "thresholds": [200, 100, 300, 300, float('inf')]
     },
-    "TNB (Industrial)": {
+    "Tenaga Nasional Berhad (TNB-Industrial)": {
         "rates": [0.365, 0.385, 0.395],
         "thresholds": [200, 200, float('inf')]
     },
-    "Sarawak Energy": {
+    "Sarawak Energy (SEB)": {
         "rates": [0.33, 0.54],
         "thresholds": [150, float('inf')]
     },
-    "SESB": {
+    "Sabah Electricity Sdn Bhd.(SESB)": {
         "rates": [0.34, 0.51],
         "thresholds": [100, float('inf')]
     }
