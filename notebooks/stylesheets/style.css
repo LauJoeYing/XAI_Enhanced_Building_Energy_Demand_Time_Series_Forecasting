@@ -2,7 +2,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Playwrite+DE+Grund:wght@100..400&display=swap');
 
 body, .stApp {
-    background-image: linear-gradient(90deg, #fddb92  , #d1fdff);
+    background-image: linear-gradient(135deg, #A9F1DF, #FFBBBB);
+    
     background-color: transparent;
     font-family: 'Satoshi', sans-serif;
 }
@@ -12,7 +13,8 @@ text {
 }
 
 [data-testid="stSidebar"] {
-    background-image: linear-gradient(135deg, #A9F1DF, #FFBBBB);
+    background-image: linear-gradient(90deg, #fddb92  , #d1fdff);
+    
 }
 
 [data-testid="stSidebarNav"] {
