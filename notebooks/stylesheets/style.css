@@ -12,7 +12,7 @@ text {
 }
 
 [data-testid="stSidebar"] {
-    background-image: linear-gradient(90deg, #A9F1DF, #FFBBBB);
+    background-image: linear-gradient(90deg, #ed4264 , #ffedbc);
 }
 
 [data-testid="stSidebarNav"] {
